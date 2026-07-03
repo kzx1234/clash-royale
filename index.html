@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clash Royale Web Multiplayer</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            background-color: #1a2536;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #2c3e50;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            text-align: center;
+            width: 350px;
+        }
+        button {
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            margin: 10px 0;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+        }
+        button:hover { background-color: #e67e22; }
+        input {
+            width: calc(100% - 24px);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+            text-align: center;
+        }
+        .hidden { display: none; }
+        .code-display {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2ecc71;
+            letter-spacing: 2px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Clash Royale Web</h2>
+        
+        <div id="tela-inicial">
+            <button onclick="mostrarCriarSala()">Criar Sala</button>
+            <button onclick="mostrarEntrarSala()">Entrar em uma Sala</button>
+        </div>
+
+        <div id="tela-criar" class="hidden">
+            <h3>Sua Sala foi Criada!</h3>
+            <p>Envie este código para o seu amigo:</p>
+            <div id="codigo-sala" class="code-display">------</div>
+            <p>Aguardando o outro jogador entrar...</p>
+            <button onclick="voltar()">Voltar</button>
+        </div>
+
+        <div id="tela-entrar" class="hidden">
+            <h3>Entrar em uma Sala</h3>
+            <input type="text" id="input-codigo" placeholder="Digite o código da sala" maxlength="6">
+            <button onclick="conectarNaSala()">Conectar e Jogar</button>
+            <button onclick="voltar()">Voltar</button>
+        </div>
+
+        <div id="tela-jogo" class="hidden">
+            <h3>Arena de Batalha</h3>
+            <p id="status-jogo">Jogo Iniciado! Escolha seu Deck.</p>
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURAÇÃO DO SUPABASE ---
+        // Substitua pelas credenciais do seu projeto do Supabase (criado gratuitamente no site deles)
+        const SUPABASE_URL = "SUA_SUPABASE_URL_AQUI";
+        const SUPABASE_KEY = "SUA_SUPABASE_ANON_KEY_AQUI";
+        
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        let canalSala = null;
+        let meuPapel = ""; // Pode ser "criador" ou "convidado"
+        let codigoDaSala = "";
+
+        // Elementos da Tela
+        const menuInicial = document.getElementById('tela-inicial');
+        const menuCriar = document.getElementById('tela-criar');
+        const menuEntrar = document.getElementById('tela-entrar');
+        const menuJogo = document.getElementById('tela-jogo');
+
+        // 1. CRIAR SALA
+        function mostrarCriarSala() {
+            menuInicial.classList.add('hidden');
+            menuCriar.classList.remove('hidden');
+            
+            // Gera código de 6 letras/números
+            codigoDaSala = Math.random().toString(36).substring(2, 8).toUpperCase();
+            document.getElementById('codigo-sala').innerText = codigoDaSala;
+            meuPapel = "criador";
+
+            // Cria e entra no canal do Supabase usando o código como nome da sala
+            conectarAoCanalRealtime(codigoDaSala);
+        }
+
+        // 2. MOSTRAR TELA DE ENTRAR
+        function mostrarEntrarSala() {
+            menuInicial.classList.add('hidden');
+            menuEntrar.classList.remove('hidden');
+        }
+
+        // 3. CONECTAR NA SALA EXISTENTE (JOGADOR 2)
+        function conectarNaSala() {
+            codigoDaSala = document.getElementById('input-codigo').value.toUpperCase();
+            if(codigoDaSala.length < 6) {
+                alert("Por favor, digite um código válido de 6 dígitos.");
+                return;
+            }
+            meuPapel = "convidado";
+
+            // Conecta no mesmo canal que o criador criou
+            conectarAoCanalRealtime(codigoDaSala);
+        }
+
+        // --- LÓGICA DE CONEXÃO REALTIME ---
+        function conectarAoCanalRealtime(idSala) {
+            canalSala = supabase.channel(`sala_${idSala}`, {
+                config: { broadcast: { self: false } } // Envia mensagens apenas para o OUTRO jogador
+            });
+
+            // Escuta mensagens do tipo 'evento_sala'
+            canalSala.on('broadcast', { event: 'evento_sala' }, (payload) => {
+                const dados = payload.payload;
+
+                // Se eu sou o criador e recebi um "entrei", significa que o jogador 2 chegou!
+                if (meuPapel === "criador" && dados.acao === "jogador_entrou") {
+                    // Avisa de volta o jogador 2 que eu vi ele entrar
+                    canalSala.send({
+                        type: 'broadcast',
+                        event: 'evento_sala',
+                        payload: { acao: 'jogo_iniciado' }
+                    });
+                    iniciarJogo();
+                }
+
+                // Se eu sou o convidado e o criador deu o sinal verde, o jogo começa
+                if (meuPapel === "convidado" && dados.acao === "jogo_iniciado") {
+                    iniciarJogo();
+                }
+            });
+
+            // Ativa a conexão
+            canalSala.subscribe((status) => {
+                if (status === 'SUBSCRIBED') {
+                    // Se eu for o convidado, assim que eu me conectar, eu aviso o criador
+                    if (meuPapel === "convidado") {
+                        canalSala.send({
+                            type: 'broadcast',
+                            event: 'evento_sala',
+                            payload: { acao: 'jogador_entrou' }
+                        });
+                    }
+                }
+            });
+        }
+
+        function iniciarJogo() {
+            menuCriar.classList.add('hidden');
+            menuEntrar.classList.add('hidden');
+            menuJogo.classList.remove('hidden');
+            document.getElementById('status-jogo').innerText = `Conectado como: ${meuPapel}. Preparem seus decks!`;
+        }
+
+        function voltar() {
+            if(canalSala) {
+                supabase.removeChannel(canalSala); // Desconecta se o jogador desistir
+            }
+            menuCriar.classList.add('hidden');
+            menuEntrar.classList.add('hidden');
+            menuInicial.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
