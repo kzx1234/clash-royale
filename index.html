@@ -15,14 +15,15 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+            overflow: hidden;
         }
         .container {
             background: #2c3e50;
-            padding: 30px;
+            padding: 20px;
             border-radius: 15px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
             text-align: center;
-            width: 350px;
+            width: 420px;
         }
         button {
             background-color: #f39c12;
@@ -55,6 +56,74 @@
             letter-spacing: 2px;
             margin: 15px 0;
         }
+        /* Estilos da Seleção de Deck */
+        .deck-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .carta {
+            background: #34495e;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            font-weight: bold;
+        }
+        .carta:hover { border-color: #f39c12; }
+        .carta.selecionada {
+            background: #27ae60;
+            border-color: #2ecc71;
+        }
+        /* Estilos do Tabuleiro / Arena */
+        .arena {
+            width: 360px;
+            height: 480px;
+            background-color: #27ae60;
+            border: 4px solid #1e7e43;
+            margin: 15px auto;
+            position: relative;
+            border-radius: 8px;
+        }
+        .rio {
+            width: 100%;
+            height: 30px;
+            background-color: #2980b9;
+            position: absolute;
+            top: 225px;
+        }
+        .ponte {
+            width: 40px;
+            height: 34px;
+            background-color: #d35400;
+            position: absolute;
+            top: 223px;
+        }
+        .ponte-esquerda { left: 40px; }
+        .ponte-direita { right: 40px; }
+        .torre {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        /* Cores dos Times */
+        .aliado { background-color: #2980b9; border: 2px solid #fff; }
+        .inimigo { background-color: #c0392b; border: 2px solid #fff; }
+        /* Posições das Torres */
+        .torre-rei-inf { bottom: 15px; left: 160px; width: 45px; height: 45px; }
+        .torre-esq-inf { bottom: 70px; left: 40px; }
+        .torre-dir-inf { bottom: 70px; right: 40px; }
+        .torre-rei-sup { top: 15px; left: 160px; width: 45px; height: 45px; }
+        .torre-esq-sup { top: 70px; left: 40px; }
+        .torre-dir-sup { top: 70px; right: 40px; }
     </style>
 </head>
 <body>
@@ -82,116 +151,163 @@
             <button onclick="voltar()">Voltar</button>
         </div>
 
+        <div id="tela-deck" class="hidden">
+            <h3>Escolha sua Carta Principal</h3>
+            <p id="status-deck">Aguardando escolhas...</p>
+            <div class="deck-container">
+                <div class="carta" id="btn-megacavaleiro" onclick="escolherCarta('Megacavaleiro')">⚔️ Megacavaleiro</div>
+                <div class="carta" id="btn-corredor" onclick="escolherCarta('Corredor')">🐷 Corredor</div>
+                <div class="carta" id="btn-gigantereal" onclick="escolherCarta('Gigante Real')">👑 Gigante Real</div>
+                <div class="carta" id="btn-pekka" onclick="escolherCarta('P.E.K.K.A')">🤖 P.E.K.K.A</div>
+            </div>
+            <button id="btn-confirmar" onclick="confirmarCarta()" style="margin-top: 20px;" disabled>Confirmar Escolha</button>
+        </div>
+
         <div id="tela-jogo" class="hidden">
-            <h3>Arena de Batalha</h3>
-            <p id="status-jogo">Jogo Iniciado! Escolha seu Deck.</p>
+            <div id="info-partida" style="font-weight: bold; margin-bottom: 5px;">Carregando arena...</div>
+            
+            <div class="arena">
+                <div class="rio"></div>
+                <div class="ponte ponte-esquerda"></div>
+                <div class="ponte ponte-direita"></div>
+
+                <div class="torre inimigo torre-rei-sup" id="torre-rei-topo">👑</div>
+                <div class="torre inimigo torre-esq-sup" id="torre-esq-topo">🏰</div>
+                <div class="torre inimigo torre-dir-sup" id="torre-dir-topo">🏰</div>
+
+                <div class="torre aliado torre-rei-inf" id="torre-rei-base">👑</div>
+                <div class="torre aliado torre-esq-inf" id="torre-esq-base">🏰</div>
+                <div class="torre aliado torre-dir-inf" id="torre-dir-base">🏰</div>
+            </div>
         </div>
     </div>
 
     <script>
         // --- CONFIGURAÇÃO DO SUPABASE ---
-        // Substitua pelas credenciais do seu projeto do Supabase (criado gratuitamente no site deles)
-        const SUPABASE_URL = "SUA_SUPABASE_URL_AQUI";
-        const SUPABASE_KEY = "SUA_SUPABASE_ANON_KEY_AQUI";
+        const SUPABASE_URL = "https://ecskfvwbcpmkvppwixiv.supabase.co"; 
+        
+        // APAGUE O TEXTO ABAIXO E COLE A SUA CHAVE PUBLISHABLE (A DO SEU PRINT) AQUI DENTRO:
+        const SUPABASE_KEY = "COLE_AQUI_SUA_CHAVE_PUBLISHABLE"; 
         
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
         let canalSala = null;
-        let meuPapel = ""; // Pode ser "criador" ou "convidado"
+        let meuPapel = ""; 
         let codigoDaSala = "";
+        let cartaSelecionada = "";
+        let rivalPronto = false;
+        let euPronto = false;
 
-        // Elementos da Tela
+        // Elementos de Interface
         const menuInicial = document.getElementById('tela-inicial');
         const menuCriar = document.getElementById('tela-criar');
         const menuEntrar = document.getElementById('tela-entrar');
+        const menuDeck = document.getElementById('tela-deck');
         const menuJogo = document.getElementById('tela-jogo');
 
-        // 1. CRIAR SALA
         function mostrarCriarSala() {
             menuInicial.classList.add('hidden');
             menuCriar.classList.remove('hidden');
-            
-            // Gera código de 6 letras/números
             codigoDaSala = Math.random().toString(36).substring(2, 8).toUpperCase();
             document.getElementById('codigo-sala').innerText = codigoDaSala;
             meuPapel = "criador";
-
-            // Cria e entra no canal do Supabase usando o código como nome da sala
             conectarAoCanalRealtime(codigoDaSala);
         }
 
-        // 2. MOSTRAR TELA DE ENTRAR
         function mostrarEntrarSala() {
             menuInicial.classList.add('hidden');
             menuEntrar.classList.remove('hidden');
         }
 
-        // 3. CONECTAR NA SALA EXISTENTE (JOGADOR 2)
         function conectarNaSala() {
             codigoDaSala = document.getElementById('input-codigo').value.toUpperCase();
-            if(codigoDaSala.length < 6) {
-                alert("Por favor, digite um código válido de 6 dígitos.");
-                return;
-            }
+            if(codigoDaSala.length < 6) return alert("Por favor, digite um código válido.");
             meuPapel = "convidado";
-
-            // Conecta no mesmo canal que o criador criou
             conectarAoCanalRealtime(codigoDaSala);
         }
 
-        // --- LÓGICA DE CONEXÃO REALTIME ---
         function conectarAoCanalRealtime(idSala) {
             canalSala = supabase.channel(`sala_${idSala}`, {
-                config: { broadcast: { self: false } } // Envia mensagens apenas para o OUTRO jogador
+                config: { broadcast: { self: false } }
             });
 
-            // Escuta mensagens do tipo 'evento_sala'
+            // Lógica para escutar o que o outro jogador faz
             canalSala.on('broadcast', { event: 'evento_sala' }, (payload) => {
                 const dados = payload.payload;
 
-                // Se eu sou o criador e recebi um "entrei", significa que o jogador 2 chegou!
                 if (meuPapel === "criador" && dados.acao === "jogador_entrou") {
-                    // Avisa de volta o jogador 2 que eu vi ele entrar
-                    canalSala.send({
-                        type: 'broadcast',
-                        event: 'evento_sala',
-                        payload: { acao: 'jogo_iniciado' }
-                    });
-                    iniciarJogo();
+                    canalSala.send({ type: 'broadcast', event: 'evento_sala', payload: { acao: 'abrir_deck' } });
+                    abrirTelaDeck();
                 }
 
-                // Se eu sou o convidado e o criador deu o sinal verde, o jogo começa
-                if (meuPapel === "convidado" && dados.acao === "jogo_iniciado") {
-                    iniciarJogo();
+                if (meuPapel === "convidado" && dados.acao === "abrir_deck") {
+                    abrirTelaDeck();
+                }
+
+                if (dados.acao === "carta_confirmada") {
+                    rivalPronto = true;
+                    verificarInicioDeJogo();
                 }
             });
 
-            // Ativa a conexão
             canalSala.subscribe((status) => {
-                if (status === 'SUBSCRIBED') {
-                    // Se eu for o convidado, assim que eu me conectar, eu aviso o criador
-                    if (meuPapel === "convidado") {
-                        canalSala.send({
-                            type: 'broadcast',
-                            event: 'evento_sala',
-                            payload: { acao: 'jogador_entrou' }
-                        });
-                    }
+                if (status === 'SUBSCRIBED' && meuPapel === "convidado") {
+                    canalSala.send({ type: 'broadcast', event: 'evento_sala', payload: { acao: 'jogador_entrou' } });
                 }
             });
         }
 
-        function iniciarJogo() {
+        function abrirTelaDeck() {
             menuCriar.classList.add('hidden');
             menuEntrar.classList.add('hidden');
-            menuJogo.classList.remove('hidden');
-            document.getElementById('status-jogo').innerText = `Conectado como: ${meuPapel}. Preparem seus decks!`;
+            menuDeck.classList.remove('hidden');
+            document.getElementById('status-deck').innerText = `Modo: ${meuPapel}. Escolha seu guerreiro principal!`;
+        }
+
+        function escolherCarta(nomeCarta) {
+            cartaSelecionada = nomeCarta;
+            document.querySelectorAll('.carta').forEach(c => c.classList.remove('selecionada'));
+            
+            const idBotao = 'btn-' + nomeCarta.toLowerCase().replace('.', '').replace(' ', '');
+            document.getElementById(idBotao).classList.add('selecionada');
+            document.getElementById('btn-confirmar').disabled = false;
+        }
+
+        function confirmarCarta() {
+            euPronto = true;
+            document.getElementById('btn-confirmar').disabled = true;
+            document.getElementById('status-deck').innerText = `Aguardando a escolha do oponente...`;
+            
+            canalSala.send({
+                type: 'broadcast',
+                event: 'evento_sala',
+                payload: { acao: 'carta_confirmada', carta: cartaSelecionada }
+            });
+
+            verificarInicioDeJogo();
+        }
+
+        function verificarInicioDeJogo() {
+            if (euPronto && rivalPronto) {
+                menuDeck.classList.add('hidden');
+                menuJogo.classList.remove('hidden');
+                document.getElementById('info-partida').innerText = `Sua Carta: ${cartaSelecionada} | Lute até o fim!`;
+                
+                // Ajusta visualmente os lados da tela para que cada jogador se sinta na base azul
+                if(meuPapel === "convidado") {
+                    document.getElementById('torre-rei-base').style.backgroundColor = "#c0392b";
+                    document.getElementById('torre-esq-base').style.backgroundColor = "#c0392b";
+                    document.getElementById('torre-dir-base').style.backgroundColor = "#c0392b";
+                    
+                    document.getElementById('torre-rei-topo').style.backgroundColor = "#2980b9";
+                    document.getElementById('torre-esq-topo').style.backgroundColor = "#2980b9";
+                    document.getElementById('torre-dir-topo').style.backgroundColor = "#2980b9";
+                }
+            }
         }
 
         function voltar() {
-            if(canalSala) {
-                supabase.removeChannel(canalSala); // Desconecta se o jogador desistir
-            }
+            if(canalSala) supabase.removeChannel(canalSala);
             menuCriar.classList.add('hidden');
             menuEntrar.classList.add('hidden');
             menuInicial.classList.remove('hidden');
