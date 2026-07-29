@@ -22,27 +22,26 @@
         }
         .container {
             background: rgba(44, 62, 80, 0.95);
-            padding: 25px;
+            padding: 20px;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.8);
             text-align: center;
-            max-width: 500px;
+            max-width: 550px;
             width: 100%;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.1);
         }
         h1 {
-            font-size: 28px;
-            margin-bottom: 15px;
+            font-size: 26px;
+            margin-bottom: 10px;
             background: linear-gradient(45deg, #f39c12, #e67e22);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: none;
         }
         h2 {
             color: #ecf0f1;
-            font-size: 20px;
-            margin-bottom: 10px;
+            font-size: 18px;
+            margin-bottom: 8px;
         }
         .hidden { display: none !important; }
         
@@ -50,9 +49,9 @@
             background: linear-gradient(45deg, #f39c12, #e67e22);
             color: white;
             border: none;
-            padding: 14px 24px;
-            margin: 8px 0;
-            font-size: 16px;
+            padding: 12px 20px;
+            margin: 6px 0;
+            font-size: 15px;
             font-weight: bold;
             border-radius: 12px;
             cursor: pointer;
@@ -82,41 +81,29 @@
         button.danger:hover {
             box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
         }
-        
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 10px;
-            border: 2px solid #34495e;
-            background: #2c3e50;
-            color: white;
-            font-size: 16px;
-            text-align: center;
-            transition: 0.3s;
-        }
-        input:focus {
-            outline: none;
-            border-color: #f39c12;
+        button.small {
+            padding: 8px 12px;
+            font-size: 12px;
+            width: auto;
+            min-width: 60px;
         }
         
         .deck-container {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin: 15px 0;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin: 12px 0;
         }
         .carta {
             background: linear-gradient(135deg, #34495e, #2c3e50);
-            padding: 15px 10px;
-            border-radius: 12px;
+            padding: 10px 5px;
+            border-radius: 10px;
             cursor: pointer;
             border: 3px solid transparent;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 11px;
             transition: all 0.3s;
             position: relative;
-            overflow: hidden;
         }
         .carta:hover {
             transform: scale(1.05);
@@ -128,26 +115,26 @@
             box-shadow: 0 0 20px rgba(46, 204, 113, 0.3);
         }
         .carta .emoji {
-            font-size: 30px;
+            font-size: 24px;
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
         .carta .nome {
-            font-size: 13px;
+            font-size: 10px;
         }
         .carta .stats {
-            font-size: 11px;
+            font-size: 9px;
             color: #bdc3c7;
-            margin-top: 3px;
+            margin-top: 2px;
         }
         
         .arena {
             width: 100%;
             max-width: 420px;
-            height: 480px;
+            height: 460px;
             background: linear-gradient(180deg, #27ae60, #1e7e43);
             border: 4px solid #1a6b3a;
-            margin: 15px auto;
+            margin: 10px auto;
             position: relative;
             border-radius: 12px;
             overflow: hidden;
@@ -157,7 +144,7 @@
             height: 28px;
             background: linear-gradient(180deg, #2980b9, #1a5276);
             position: absolute;
-            top: 226px;
+            top: 216px;
             border-top: 2px solid #2471a3;
             border-bottom: 2px solid #2471a3;
         }
@@ -166,7 +153,7 @@
             height: 32px;
             background: linear-gradient(180deg, #d35400, #a04000);
             position: absolute;
-            top: 224px;
+            top: 214px;
             border-radius: 4px 4px 0 0;
             border: 2px solid #6c2e00;
         }
@@ -174,25 +161,25 @@
         .ponte-direita { right: 35px; }
         
         .torre {
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             position: absolute;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            transition: all 0.3s;
             border: 2px solid rgba(255,255,255,0.2);
+            z-index: 5;
         }
         .torre .hp-bar {
             position: absolute;
             bottom: -6px;
             left: 50%;
             transform: translateX(-50%);
-            width: 30px;
+            width: 28px;
             height: 4px;
             background: rgba(0,0,0,0.6);
             border-radius: 2px;
@@ -203,43 +190,40 @@
             background: #2ecc71;
             transition: width 0.3s;
         }
-        .torre-rei { width: 44px; height: 44px; font-size: 20px; }
-        .torre-rei-inf { bottom: 12px; left: 50%; transform: translateX(-50%); }
-        .torre-rei-sup { top: 12px; left: 50%; transform: translateX(-50%); }
-        .torre-esq-inf { bottom: 65px; left: 30px; }
-        .torre-dir-inf { bottom: 65px; right: 30px; }
-        .torre-esq-sup { top: 65px; left: 30px; }
-        .torre-dir-sup { top: 65px; right: 30px; }
+        .torre-rei { width: 42px; height: 42px; font-size: 18px; }
+        .torre-rei-inf { bottom: 10px; left: 50%; transform: translateX(-50%); }
+        .torre-rei-sup { top: 10px; left: 50%; transform: translateX(-50%); }
+        .torre-esq-inf { bottom: 60px; left: 25px; }
+        .torre-dir-inf { bottom: 60px; right: 25px; }
+        .torre-esq-sup { top: 60px; left: 25px; }
+        .torre-dir-sup { top: 60px; right: 25px; }
         
         .aliado { background: radial-gradient(circle, #3498db, #1a5276); border-color: #85c1e9; }
         .inimigo { background: radial-gradient(circle, #e74c3c, #922b21); border-color: #f1948a; }
-        
         .torre.aliado .hp-fill { background: #3498db; }
         .torre.inimigo .hp-fill { background: #e74c3c; }
         
-        /* Tropas */
         .tropa {
             position: absolute;
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
-            transition: all 0.1s;
+            transition: all 0.05s;
             z-index: 10;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             border: 2px solid rgba(255,255,255,0.3);
-            cursor: pointer;
         }
         .tropa .hp-bar {
             position: absolute;
             bottom: -4px;
             left: 50%;
             transform: translateX(-50%);
-            width: 24px;
+            width: 22px;
             height: 3px;
             background: rgba(0,0,0,0.6);
             border-radius: 2px;
@@ -254,29 +238,63 @@
         .tropa.inimigo { background: radial-gradient(circle, #e74c3c, #922b21); }
         .tropa .nome-tropa {
             position: absolute;
-            bottom: -16px;
-            font-size: 8px;
+            bottom: -14px;
+            font-size: 7px;
             white-space: nowrap;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             padding: 1px 4px;
             border-radius: 3px;
             color: #ecf0f1;
+        }
+        .tropa.atacando {
+            animation: ataque 0.3s ease-in-out;
+        }
+        @keyframes ataque {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
         }
         
         .info-battle {
             display: flex;
             justify-content: space-between;
-            padding: 8px 12px;
+            padding: 6px 10px;
             background: rgba(0,0,0,0.3);
             border-radius: 8px;
-            margin-bottom: 10px;
-            font-size: 14px;
+            margin-bottom: 8px;
+            font-size: 13px;
         }
-        .info-battle .hp-total {
-            color: #2ecc71;
+        .info-battle .hp-total { color: #2ecc71; }
+        .info-battle .hp-total.inimigo { color: #e74c3c; }
+        
+        .hotbar {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            margin: 8px 0;
         }
-        .info-battle .hp-total.inimigo {
-            color: #e74c3c;
+        .hotbar-item {
+            background: rgba(0,0,0,0.4);
+            padding: 6px 4px;
+            border-radius: 8px;
+            border: 2px solid #34495e;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 11px;
+        }
+        .hotbar-item:hover {
+            border-color: #f39c12;
+            transform: scale(1.05);
+        }
+        .hotbar-item.ativo {
+            border-color: #2ecc71;
+            background: rgba(46, 204, 113, 0.2);
+        }
+        .hotbar-item .emoji { font-size: 20px; display: block; }
+        .hotbar-item .nome { font-size: 9px; }
+        .hotbar-item .custo {
+            font-size: 10px;
+            color: #f39c12;
+            font-weight: bold;
         }
         
         .game-over {
@@ -285,36 +303,52 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(0,0,0,0.95);
-            padding: 30px 40px;
+            padding: 25px 35px;
             border-radius: 15px;
             z-index: 100;
             border: 3px solid #f39c12;
-            min-width: 250px;
+            min-width: 200px;
         }
         .game-over h2 {
-            font-size: 28px;
-            margin-bottom: 10px;
+            font-size: 24px;
+            margin-bottom: 8px;
         }
         .game-over .vitoria { color: #2ecc71; }
         .game-over .derrota { color: #e74c3c; }
         
+        .timer-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 4px 0;
+        }
+        .timer-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #f39c12);
+            transition: width 0.1s;
+        }
+        
         @media (max-width: 500px) {
-            .container { padding: 15px; }
-            .arena { height: 400px; max-width: 100%; }
-            .deck-container { grid-template-columns: 1fr 1fr; }
-            .carta { padding: 10px 5px; font-size: 12px; }
-            .carta .emoji { font-size: 24px; }
-            .torre { width: 30px; height: 30px; font-size: 14px; }
-            .torre-rei { width: 38px; height: 38px; font-size: 18px; }
-            .tropa { width: 28px; height: 28px; font-size: 16px; }
-            .rio { top: 188px; height: 24px; }
-            .ponte { top: 186px; height: 28px; width: 36px; }
-            .torre-rei-inf { bottom: 10px; }
-            .torre-rei-sup { top: 10px; }
-            .torre-esq-inf { bottom: 55px; left: 20px; }
-            .torre-dir-inf { bottom: 55px; right: 20px; }
-            .torre-esq-sup { top: 55px; left: 20px; }
-            .torre-dir-sup { top: 55px; right: 20px; }
+            .container { padding: 12px; }
+            .arena { height: 380px; max-width: 100%; }
+            .deck-container { grid-template-columns: repeat(5, 1fr); gap: 4px; }
+            .carta { padding: 6px 3px; font-size: 9px; }
+            .carta .emoji { font-size: 18px; }
+            .torre { width: 28px; height: 28px; font-size: 12px; }
+            .torre-rei { width: 36px; height: 36px; font-size: 16px; }
+            .tropa { width: 26px; height: 26px; font-size: 14px; }
+            .rio { top: 178px; height: 22px; }
+            .ponte { top: 176px; height: 26px; width: 34px; }
+            .torre-rei-inf { bottom: 8px; }
+            .torre-rei-sup { top: 8px; }
+            .torre-esq-inf { bottom: 50px; left: 18px; }
+            .torre-dir-inf { bottom: 50px; right: 18px; }
+            .torre-esq-sup { top: 50px; left: 18px; }
+            .torre-dir-sup { top: 50px; right: 18px; }
+            .hotbar-item { padding: 4px 2px; font-size: 9px; }
+            .hotbar-item .emoji { font-size: 16px; }
         }
     </style>
 </head>
@@ -325,37 +359,68 @@
     
     <!-- Tela Inicial -->
     <div id="tela-inicial">
-        <p style="margin-bottom: 15px; color: #bdc3c7;">Batalhe contra a IA e derrube as torres!</p>
+        <p style="margin-bottom: 12px; color: #bdc3c7;">Monte seu deck e batalhe contra a IA!</p>
         <button onclick="iniciarJogo()">▶️ Iniciar Batalha</button>
     </div>
 
     <!-- Tela Deck -->
     <div id="tela-deck" class="hidden">
-        <h2>🛡️ Escolha seu Campeão</h2>
-        <p style="color: #bdc3c7; font-size: 14px; margin-bottom: 10px;">Selecione sua carta principal</p>
-        <div class="deck-container">
-            <div class="carta" id="btn-megacavaleiro" onclick="escolherCarta('Megacavaleiro')">
+        <h2>🛡️ Monte seu Deck</h2>
+        <p style="color: #bdc3c7; font-size: 13px; margin-bottom: 8px;">Escolha 5 guerreiros para seu deck</p>
+        <div class="deck-container" id="selecao-cartas">
+            <div class="carta" onclick="toggleCarta('Megacavaleiro')">
                 <span class="emoji">⚔️</span>
                 <span class="nome">Megacavaleiro</span>
-                <span class="stats">HP: 1200 • ATK: 80</span>
+                <span class="stats">HP:1200 • ATK:80</span>
             </div>
-            <div class="carta" id="btn-corredor" onclick="escolherCarta('Corredor')">
+            <div class="carta" onclick="toggleCarta('Corredor')">
                 <span class="emoji">🐷</span>
                 <span class="nome">Corredor</span>
-                <span class="stats">HP: 900 • ATK: 100</span>
+                <span class="stats">HP:900 • ATK:100</span>
             </div>
-            <div class="carta" id="btn-gigantereal" onclick="escolherCarta('Gigante Real')">
+            <div class="carta" onclick="toggleCarta('Gigante Real')">
                 <span class="emoji">👑</span>
                 <span class="nome">Gigante Real</span>
-                <span class="stats">HP: 1500 • ATK: 60</span>
+                <span class="stats">HP:1500 • ATK:60</span>
             </div>
-            <div class="carta" id="btn-pekka" onclick="escolherCarta('P.E.K.K.A')">
+            <div class="carta" onclick="toggleCarta('P.E.K.K.A')">
                 <span class="emoji">🤖</span>
                 <span class="nome">P.E.K.K.A</span>
-                <span class="stats">HP: 1000 • ATK: 120</span>
+                <span class="stats">HP:1000 • ATK:120</span>
+            </div>
+            <div class="carta" onclick="toggleCarta('Arqueiro')">
+                <span class="emoji">🏹</span>
+                <span class="nome">Arqueiro</span>
+                <span class="stats">HP:700 • ATK:90</span>
+            </div>
+            <div class="carta" onclick="toggleCarta('Gigante')">
+                <span class="emoji">🦍</span>
+                <span class="nome">Gigante</span>
+                <span class="stats">HP:1800 • ATK:50</span>
+            </div>
+            <div class="carta" onclick="toggleCarta('Bruxa')">
+                <span class="emoji">🧙</span>
+                <span class="nome">Bruxa</span>
+                <span class="stats">HP:800 • ATK:70</span>
+            </div>
+            <div class="carta" onclick="toggleCarta('Golem')">
+                <span class="emoji">🗿</span>
+                <span class="nome">Golem</span>
+                <span class="stats">HP:2000 • ATK:40</span>
+            </div>
+            <div class="carta" onclick="toggleCarta('Lorde')">
+                <span class="emoji">⚡</span>
+                <span class="nome">Lorde</span>
+                <span class="stats">HP:1100 • ATK:85</span>
+            </div>
+            <div class="carta" onclick="toggleCarta('Dragão')">
+                <span class="emoji">🐉</span>
+                <span class="nome">Dragão</span>
+                <span class="stats">HP:1300 • ATK:75</span>
             </div>
         </div>
-        <button id="btn-confirmar" onclick="confirmarCarta()" disabled>Confirmar Escolha</button>
+        <p id="deck-status" style="color: #f39c12; font-size: 13px;">Selecione 5 cartas</p>
+        <button id="btn-confirmar-deck" onclick="confirmarDeck()" disabled>Confirmar Deck</button>
         <button class="secondary" onclick="voltarInicio()">↩️ Voltar</button>
     </div>
 
@@ -403,36 +468,72 @@
             <!-- Game Over Overlay -->
             <div id="game-over" class="hidden game-over">
                 <h2 id="resultado-texto"></h2>
-                <p id="resultado-sub" style="margin: 10px 0; color: #bdc3c7;"></p>
-                <button onclick="reiniciarJogo()" style="margin-top: 10px;">🔄 Jogar Novamente</button>
+                <p id="resultado-sub" style="margin: 8px 0; color: #bdc3c7;"></p>
+                <button onclick="reiniciarJogo()" style="margin-top: 8px;">🔄 Jogar Novamente</button>
                 <button class="secondary" onclick="voltarInicio()">🏠 Menu</button>
             </div>
         </div>
         
-        <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
-            <button onclick="enviarTropa('esquerda')" style="flex:1; min-width:80px;">⬅️ Esq</button>
-            <button onclick="enviarTropa('centro')" style="flex:1; min-width:80px;">⬆️ Centro</button>
-            <button onclick="enviarTropa('direita')" style="flex:1; min-width:80px;">➡️ Dir</button>
+        <!-- Hotbar -->
+        <div class="hotbar" id="hotbar">
+            <div class="hotbar-item" data-index="0" onclick="selecionarHotbar(0)">
+                <span class="emoji">⚔️</span>
+                <span class="nome">Selecione</span>
+            </div>
+            <div class="hotbar-item" data-index="1" onclick="selecionarHotbar(1)">
+                <span class="emoji">⚔️</span>
+                <span class="nome">Selecione</span>
+            </div>
+            <div class="hotbar-item" data-index="2" onclick="selecionarHotbar(2)">
+                <span class="emoji">⚔️</span>
+                <span class="nome">Selecione</span>
+            </div>
+            <div class="hotbar-item" data-index="3" onclick="selecionarHotbar(3)">
+                <span class="emoji">⚔️</span>
+                <span class="nome">Selecione</span>
+            </div>
+            <div class="hotbar-item" data-index="4" onclick="selecionarHotbar(4)">
+                <span class="emoji">⚔️</span>
+                <span class="nome">Selecione</span>
+            </div>
         </div>
-        <button class="danger" onclick="voltarInicio()" style="margin-top:8px;">⏹️ Sair</button>
+        
+        <!-- Timer e controles -->
+        <div class="timer-bar">
+            <div class="timer-fill" id="timer-fill" style="width:100%"></div>
+        </div>
+        <div style="display: flex; gap: 6px; margin-top: 6px;">
+            <button onclick="enviarTropa('esquerda')" style="flex:1; padding: 10px; font-size: 13px;">⬅️ Esq</button>
+            <button onclick="enviarTropa('centro')" style="flex:1; padding: 10px; font-size: 13px;">⬆️ Centro</button>
+            <button onclick="enviarTropa('direita')" style="flex:1; padding: 10px; font-size: 13px;">➡️ Dir</button>
+        </div>
+        <button class="danger" onclick="voltarInicio()" style="margin-top:6px; padding: 8px;">⏹️ Sair</button>
     </div>
 </div>
 
 <script>
-    // ======================== CONFIGURAÇÃO DO JOGO ========================
-    let cartaSelecionada = null;
+    // ======================== CONFIGURAÇÃO ========================
+    let deckSelecionado = [];
+    let cartaAtual = 0;
     let jogoAtivo = false;
     let tropasAliadas = [];
     let tropasInimigas = [];
     let intervalos = [];
     let frameId = null;
+    let tempoRecarga = 0;
+    const TEMPO_MAX_RECARGA = 180; // ~3 segundos a 60fps
 
-    // Stats das cartas
     const CARTAS = {
         'Megacavaleiro': { hp: 1200, atk: 80, speed: 1.2, range: 35, emoji: '⚔️', nome: 'Megacavaleiro' },
         'Corredor': { hp: 900, atk: 100, speed: 1.8, range: 30, emoji: '🐷', nome: 'Corredor' },
         'Gigante Real': { hp: 1500, atk: 60, speed: 0.8, range: 40, emoji: '👑', nome: 'Gigante Real' },
-        'P.E.K.K.A': { hp: 1000, atk: 120, speed: 1.0, range: 25, emoji: '🤖', nome: 'P.E.K.K.A' }
+        'P.E.K.K.A': { hp: 1000, atk: 120, speed: 1.0, range: 25, emoji: '🤖', nome: 'P.E.K.K.A' },
+        'Arqueiro': { hp: 700, atk: 90, speed: 1.6, range: 45, emoji: '🏹', nome: 'Arqueiro' },
+        'Gigante': { hp: 1800, atk: 50, speed: 0.7, range: 30, emoji: '🦍', nome: 'Gigante' },
+        'Bruxa': { hp: 800, atk: 70, speed: 1.3, range: 38, emoji: '🧙', nome: 'Bruxa' },
+        'Golem': { hp: 2000, atk: 40, speed: 0.6, range: 28, emoji: '🗿', nome: 'Golem' },
+        'Lorde': { hp: 1100, atk: 85, speed: 1.4, range: 32, emoji: '⚡', nome: 'Lorde' },
+        'Dragão': { hp: 1300, atk: 75, speed: 1.1, range: 36, emoji: '🐉', nome: 'Dragão' }
     };
 
     // ======================== FUNÇÕES DE INTERFACE ========================
@@ -447,55 +548,55 @@
         pararJogo();
         mostrarTela('tela-inicial');
         document.getElementById('game-over').classList.add('hidden');
-        // Limpar tropas
         document.querySelectorAll('.tropa').forEach(el => el.remove());
         tropasAliadas = [];
         tropasInimigas = [];
+        deckSelecionado = [];
     }
 
     function iniciarJogo() {
         mostrarTela('tela-deck');
         document.getElementById('game-over').classList.add('hidden');
-        cartaSelecionada = null;
+        deckSelecionado = [];
         document.querySelectorAll('.carta').forEach(c => c.classList.remove('selecionada'));
-        document.getElementById('btn-confirmar').disabled = true;
+        document.getElementById('btn-confirmar-deck').disabled = true;
+        document.getElementById('deck-status').textContent = 'Selecione 5 cartas';
     }
 
-    function escolherCarta(nome) {
-        cartaSelecionada = nome;
-        document.querySelectorAll('.carta').forEach(c => c.classList.remove('selecionada'));
-        const idMap = {
-            'Megacavaleiro': 'btn-megacavaleiro',
-            'Corredor': 'btn-corredor',
-            'Gigante Real': 'btn-gigantereal',
-            'P.E.K.K.A': 'btn-pekka'
-        };
-        document.getElementById(idMap[nome]).classList.add('selecionada');
-        document.getElementById('btn-confirmar').disabled = false;
+    function toggleCarta(nome) {
+        const index = deckSelecionado.indexOf(nome);
+        if (index > -1) {
+            deckSelecionado.splice(index, 1);
+        } else if (deckSelecionado.length < 5) {
+            deckSelecionado.push(nome);
+        } else {
+            document.getElementById('deck-status').textContent = '⚠️ Máximo de 5 cartas!';
+            return;
+        }
+        
+        // Atualizar visual
+        const cartas = document.querySelectorAll('.carta');
+        const nomes = ['Megacavaleiro', 'Corredor', 'Gigante Real', 'P.E.K.K.A', 'Arqueiro', 'Gigante', 'Bruxa', 'Golem', 'Lorde', 'Dragão'];
+        cartas.forEach((el, i) => {
+            el.classList.toggle('selecionada', deckSelecionado.includes(nomes[i]));
+        });
+        
+        document.getElementById('deck-status').textContent = `${deckSelecionado.length}/5 cartas selecionadas`;
+        document.getElementById('btn-confirmar-deck').disabled = deckSelecionado.length !== 5;
     }
 
-    function confirmarCarta() {
-        if (!cartaSelecionada) return;
-        iniciarBatalha();
+    function confirmarDeck() {
+        if (deckSelecionado.length === 5) {
+            iniciarBatalha();
+        }
     }
 
-    function reiniciarJogo() {
-        document.getElementById('game-over').classList.add('hidden');
-        // Resetar torres
-        resetarTorres();
-        // Limpar tropas
-        document.querySelectorAll('.tropa').forEach(el => el.remove());
-        tropasAliadas = [];
-        tropasInimigas = [];
-        jogoAtivo = true;
-        atualizarContadores();
-        // Iniciar novamente
-        if (frameId) cancelAnimationFrame(frameId);
-        loopJogo();
-        // IA começa a enviar tropas
-        setTimeout(() => {
-            if (jogoAtivo) enviarTropaIA();
-        }, 2000);
+    function selecionarHotbar(index) {
+        if (!jogoAtivo || index >= deckSelecionado.length) return;
+        cartaAtual = index;
+        document.querySelectorAll('.hotbar-item').forEach((el, i) => {
+            el.classList.toggle('ativo', i === index);
+        });
     }
 
     // ======================== LÓGICA DA BATALHA ========================
@@ -503,10 +604,23 @@
         mostrarTela('tela-jogo');
         document.getElementById('game-over').classList.add('hidden');
         
-        // Resetar torres
-        resetarTorres();
+        // Atualizar hotbar
+        const items = document.querySelectorAll('.hotbar-item');
+        deckSelecionado.forEach((nome, i) => {
+            if (items[i]) {
+                const stats = CARTAS[nome];
+                items[i].innerHTML = `
+                    <span class="emoji">${stats.emoji}</span>
+                    <span class="nome">${stats.nome}</span>
+                    <span class="custo">⚡${Math.floor(stats.hp/200 + stats.atk/30)}</span>
+                `;
+                items[i].classList.add('ativo');
+            }
+        });
+        cartaAtual = 0;
+        tempoRecarga = 0;
         
-        // Limpar tropas
+        resetarTorres();
         document.querySelectorAll('.tropa').forEach(el => el.remove());
         tropasAliadas = [];
         tropasInimigas = [];
@@ -514,14 +628,12 @@
         jogoAtivo = true;
         atualizarContadores();
         
-        // Iniciar loop do jogo
         if (frameId) cancelAnimationFrame(frameId);
         loopJogo();
         
-        // IA começa a enviar tropas após 2 segundos
         setTimeout(() => {
             if (jogoAtivo) enviarTropaIA();
-        }, 2000);
+        }, 1500);
     }
 
     function resetarTorres() {
@@ -574,7 +686,7 @@
             alvo: null,
             estado: 'andando',
             cooldown: 0,
-            targetType: time === 'aliado' ? 'inimigo' : 'aliado'
+            atacando: false
         };
         
         if (time === 'aliado') {
@@ -588,7 +700,11 @@
     }
 
     function enviarTropa(lado) {
-        if (!jogoAtivo || !cartaSelecionada) return;
+        if (!jogoAtivo || deckSelecionado.length === 0) return;
+        if (tempoRecarga > 0) return;
+        
+        const tipo = deckSelecionado[cartaAtual];
+        if (!tipo) return;
         
         const arena = document.getElementById('arena');
         const arenaWidth = arena.offsetWidth;
@@ -601,13 +717,20 @@
         
         const y = arenaHeight - 60 - Math.random() * 40;
         
-        criarTropa(cartaSelecionada, 'aliado', x, y);
+        criarTropa(tipo, 'aliado', x, y);
+        tempoRecarga = TEMPO_MAX_RECARGA;
+        
+        // Avançar para próxima carta
+        cartaAtual = (cartaAtual + 1) % deckSelecionado.length;
+        document.querySelectorAll('.hotbar-item').forEach((el, i) => {
+            el.classList.toggle('ativo', i === cartaAtual);
+        });
     }
 
     function enviarTropaIA() {
         if (!jogoAtivo) return;
         
-        const tipos = Object.keys(CARTAS);
+        const tipos = deckSelecionado.length > 0 ? deckSelecionado : Object.keys(CARTAS);
         const tipo = tipos[Math.floor(Math.random() * tipos.length)];
         const arena = document.getElementById('arena');
         const arenaWidth = arena.offsetWidth;
@@ -617,8 +740,7 @@
         
         criarTropa(tipo, 'inimigo', x, y);
         
-        // IA envia tropas periodicamente
-        const delay = 2000 + Math.random() * 3000;
+        const delay = 1500 + Math.random() * 3000;
         const id = setTimeout(() => {
             if (jogoAtivo) enviarTropaIA();
         }, delay);
@@ -629,6 +751,16 @@
     function loopJogo() {
         if (!jogoAtivo) return;
         
+        // Atualizar tempo de recarga
+        if (tempoRecarga > 0) {
+            tempoRecarga--;
+            const percent = (tempoRecarga / TEMPO_MAX_RECARGA) * 100;
+            document.getElementById('timer-fill').style.width = (100 - percent) + '%';
+        } else {
+            document.getElementById('timer-fill').style.width = '100%';
+        }
+        
+        moverTropas();
         atualizarTropas();
         atualizarContadores();
         atualizarHpReis();
@@ -637,21 +769,13 @@
         frameId = requestAnimationFrame(loopJogo);
     }
 
-    function atualizarTropas() {
-        const arena = document.getElementById('arena');
-        const arenaWidth = arena.offsetWidth;
-        const arenaHeight = arena.offsetHeight;
-        
-        // Atualizar todas as tropas
+    function moverTropas() {
         const todasTropas = [...tropasAliadas, ...tropasInimigas];
         
         for (const tropa of todasTropas) {
             if (tropa.estado === 'morto') continue;
             
-            // Atualizar cooldown de ataque
-            if (tropa.cooldown > 0) tropa.cooldown--;
-            
-            // Procurar alvo (torre ou tropa)
+            // Procurar alvo
             tropa.alvo = encontrarAlvo(tropa);
             
             if (tropa.alvo) {
@@ -660,42 +784,70 @@
                 const dist = Math.sqrt(dx*dx + dy*dy);
                 
                 if (dist <= tropa.range) {
+                    // Atacar
                     tropa.estado = 'atacando';
-                    if (tropa.cooldown <= 0) {
+                    if (!tropa.atacando) {
+                        tropa.atacando = true;
+                        tropa.el.classList.add('atacando');
                         atacar(tropa, tropa.alvo);
-                        tropa.cooldown = 30;
+                        setTimeout(() => {
+                            tropa.atacando = false;
+                            tropa.el.classList.remove('atacando');
+                        }, 300);
                     }
                 } else {
+                    // Mover em direção ao alvo
                     tropa.estado = 'andando';
                     const angle = Math.atan2(dy, dx);
-                    const speed = tropa.speed * 1.5;
+                    const speed = tropa.speed * 1.8;
                     tropa.x += Math.cos(angle) * speed;
                     tropa.y += Math.sin(angle) * speed;
                 }
             } else {
+                // Sem alvo, andar em direção ao inimigo
                 tropa.estado = 'andando';
                 if (tropa.time === 'aliado') {
-                    tropa.y -= tropa.speed;
+                    tropa.y -= tropa.speed * 0.8;
                 } else {
-                    tropa.y += tropa.speed;
+                    tropa.y += tropa.speed * 0.8;
                 }
             }
             
             // Limites da arena
-            tropa.x = Math.max(5, Math.min(arenaWidth - 37, tropa.x));
-            tropa.y = Math.max(5, Math.min(arenaHeight - 37, tropa.y));
+            const arena = document.getElementById('arena');
+            const arenaWidth = arena.offsetWidth;
+            const arenaHeight = arena.offsetHeight;
+            tropa.x = Math.max(5, Math.min(arenaWidth - 35, tropa.x));
+            tropa.y = Math.max(5, Math.min(arenaHeight - 35, tropa.y));
             
-            // Atualizar posição no DOM
+            // Atualizar posição
             tropa.el.style.left = tropa.x + 'px';
             tropa.el.style.top = tropa.y + 'px';
             
-            // Atualizar HP visual
+            // Atualizar HP
             const hpPercent = (tropa.hp / tropa.maxHp) * 100;
             tropa.el.querySelector('.hp-fill').style.width = Math.max(0, hpPercent) + '%';
         }
         
-        // Remover tropas mortas
         removerMortos();
+    }
+
+    function atualizarTropas() {
+        // Remove tropas que saíram da arena
+        const arena = document.getElementById('arena');
+        const arenaHeight = arena.offsetHeight;
+        
+        tropasAliadas = tropasAliadas.filter(t => {
+            if (t.estado === 'morto') { t.el.remove(); return false; }
+            if (t.y < -50) { t.el.remove(); return false; }
+            return true;
+        });
+        
+        tropasInimigas = tropasInimigas.filter(t => {
+            if (t.estado === 'morto') { t.el.remove(); return false; }
+            if (t.y > arenaHeight + 50) { t.el.remove(); return false; }
+            return true;
+        });
     }
 
     function encontrarAlvo(tropa) {
@@ -717,14 +869,30 @@
             const arenaRect = document.getElementById('arena').getBoundingClientRect();
             const x = rect.left - arenaRect.left + rect.width/2;
             const y = rect.top - arenaRect.top + rect.height/2;
-            alvos.push({ tipo: 'torre', x, y, hp, el, id, distancia: 999 });
+            alvos.push({ 
+                tipo: 'torre', 
+                x, y, 
+                hp, 
+                el, 
+                id, 
+                distancia: 999,
+                prioridade: 1 // Torres têm prioridade menor que tropas
+            });
         }
         
         // Tropas inimigas
         const tropasInimigas = isAliado ? window.tropasInimigas : window.tropasAliadas;
         for (const t of tropasInimigas) {
             if (t.estado === 'morto') continue;
-            alvos.push({ tipo: 'tropa', x: t.x, y: t.y, hp: t.hp, tropa: t, distancia: 999 });
+            alvos.push({ 
+                tipo: 'tropa', 
+                x: t.x, 
+                y: t.y, 
+                hp: t.hp, 
+                tropa: t, 
+                distancia: 999,
+                prioridade: 0 // Tropas têm prioridade maior
+            });
         }
         
         // Calcular distâncias
@@ -734,23 +902,29 @@
             alvo.distancia = Math.sqrt(dx*dx + dy*dy);
         }
         
-        alvos.sort((a, b) => a.distancia - b.distancia);
+        // Ordenar por prioridade (tropas primeiro) e depois distância
+        alvos.sort((a, b) => {
+            if (a.prioridade !== b.prioridade) return a.prioridade - b.prioridade;
+            return a.distancia - b.distancia;
+        });
         
-        // Priorizar tropas próximas, depois torres
+        // Pegar o alvo mais próximo com prioridade
         for (const alvo of alvos) {
-            if (alvo.tipo === 'tropa' && alvo.distancia < 200) return alvo.tropa;
-        }
-        for (const alvo of alvos) {
-            if (alvo.tipo === 'torre' && alvo.distancia < 300) return alvo;
+            const maxDist = alvo.tipo === 'tropa' ? 250 : 350;
+            if (alvo.distancia < maxDist) {
+                return alvo.tropa || alvo;
+            }
         }
         
-        return alvos.length > 0 ? alvos[0].tropa || alvos[0] : null;
+        // Se não encontrou nenhum alvo próximo, pegar o mais próximo
+        return alvos.length > 0 ? (alvos[0].tropa || alvos[0]) : null;
     }
 
     function atacar(atacante, alvo) {
         if (!alvo || alvo.estado === 'morto') return;
+        if (!jogoAtivo) return;
         
-        const dano = atacante.atk;
+        const dano = atacante.atk + Math.floor(Math.random() * 10 - 5);
         
         if (alvo.tipo === 'torre' || alvo.id) {
             const id = alvo.id || alvo;
@@ -827,6 +1001,24 @@
         document.getElementById('resultado-texto').textContent = vitoria ? '🎉 VITÓRIA!' : '💀 DERROTA!';
         document.getElementById('resultado-texto').className = vitoria ? 'vitoria' : 'derrota';
         document.getElementById('resultado-sub').textContent = mensagem;
+    }
+
+    function reiniciarJogo() {
+        document.getElementById('game-over').classList.add('hidden');
+        document.querySelectorAll('.tropa').forEach(el => el.remove());
+        tropasAliadas = [];
+        tropasInimigas = [];
+        resetarTorres();
+        jogoAtivo = true;
+        tempoRecarga = 0;
+        atualizarContadores();
+        
+        if (frameId) cancelAnimationFrame(frameId);
+        loopJogo();
+        
+        setTimeout(() => {
+            if (jogoAtivo) enviarTropaIA();
+        }, 1500);
     }
 
     // ======================== INICIALIZAÇÃO ========================
