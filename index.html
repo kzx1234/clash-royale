@@ -22,7 +22,7 @@
         }
         .container {
             background: rgba(44, 62, 80, 0.95);
-            padding: 20px;
+            padding: 15px;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.8);
             text-align: center;
@@ -32,8 +32,8 @@
             border: 1px solid rgba(255,255,255,0.1);
         }
         h1 {
-            font-size: 26px;
-            margin-bottom: 10px;
+            font-size: 24px;
+            margin-bottom: 8px;
             background: linear-gradient(45deg, #f39c12, #e67e22);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -81,29 +81,22 @@
         button.danger:hover {
             box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
         }
-        button.small {
-            padding: 8px 12px;
-            font-size: 12px;
-            width: auto;
-            min-width: 60px;
-        }
         
         .deck-container {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            margin: 12px 0;
+            gap: 6px;
+            margin: 10px 0;
         }
         .carta {
             background: linear-gradient(135deg, #34495e, #2c3e50);
-            padding: 10px 5px;
+            padding: 8px 4px;
             border-radius: 10px;
             cursor: pointer;
             border: 3px solid transparent;
             font-weight: bold;
-            font-size: 11px;
+            font-size: 10px;
             transition: all 0.3s;
-            position: relative;
         }
         .carta:hover {
             transform: scale(1.05);
@@ -114,19 +107,10 @@
             background: linear-gradient(135deg, #27ae60, #1e8449);
             box-shadow: 0 0 20px rgba(46, 204, 113, 0.3);
         }
-        .carta .emoji {
-            font-size: 24px;
-            display: block;
-            margin-bottom: 3px;
-        }
-        .carta .nome {
-            font-size: 10px;
-        }
-        .carta .stats {
-            font-size: 9px;
-            color: #bdc3c7;
-            margin-top: 2px;
-        }
+        .carta .emoji { font-size: 22px; display: block; margin-bottom: 2px; }
+        .carta .nome { font-size: 9px; }
+        .carta .stats { font-size: 8px; color: #bdc3c7; }
+        .carta .custo { font-size: 10px; color: #f39c12; font-weight: bold; }
         
         .arena {
             width: 100%;
@@ -134,7 +118,7 @@
             height: 460px;
             background: linear-gradient(180deg, #27ae60, #1e7e43);
             border: 4px solid #1a6b3a;
-            margin: 10px auto;
+            margin: 8px auto;
             position: relative;
             border-radius: 12px;
             overflow: hidden;
@@ -213,10 +197,10 @@
             align-items: center;
             font-size: 16px;
             font-weight: bold;
-            transition: all 0.05s;
             z-index: 10;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             border: 2px solid rgba(255,255,255,0.3);
+            transition: left 0.05s, top 0.05s;
         }
         .tropa .hp-bar {
             position: absolute;
@@ -247,7 +231,7 @@
             color: #ecf0f1;
         }
         .tropa.atacando {
-            animation: ataque 0.3s ease-in-out;
+            animation: ataque 0.2s ease-in-out;
         }
         @keyframes ataque {
             0%, 100% { transform: scale(1); }
@@ -260,26 +244,30 @@
             padding: 6px 10px;
             background: rgba(0,0,0,0.3);
             border-radius: 8px;
-            margin-bottom: 8px;
-            font-size: 13px;
+            margin-bottom: 6px;
+            font-size: 12px;
+            flex-wrap: wrap;
+            gap: 4px;
         }
         .info-battle .hp-total { color: #2ecc71; }
         .info-battle .hp-total.inimigo { color: #e74c3c; }
+        .info-battle .energia { color: #f39c12; font-weight: bold; }
         
         .hotbar {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 6px;
-            margin: 8px 0;
+            gap: 4px;
+            margin: 6px 0;
         }
         .hotbar-item {
             background: rgba(0,0,0,0.4);
-            padding: 6px 4px;
+            padding: 4px 2px;
             border-radius: 8px;
             border: 2px solid #34495e;
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 11px;
+            font-size: 10px;
+            position: relative;
         }
         .hotbar-item:hover {
             border-color: #f39c12;
@@ -289,13 +277,14 @@
             border-color: #2ecc71;
             background: rgba(46, 204, 113, 0.2);
         }
-        .hotbar-item .emoji { font-size: 20px; display: block; }
-        .hotbar-item .nome { font-size: 9px; }
+        .hotbar-item .emoji { font-size: 18px; display: block; }
+        .hotbar-item .nome { font-size: 8px; }
         .hotbar-item .custo {
             font-size: 10px;
             color: #f39c12;
             font-weight: bold;
         }
+        .hotbar-item .custo.insuficiente { color: #e74c3c; }
         
         .game-over {
             position: absolute;
@@ -309,16 +298,13 @@
             border: 3px solid #f39c12;
             min-width: 200px;
         }
-        .game-over h2 {
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
+        .game-over h2 { font-size: 24px; margin-bottom: 8px; }
         .game-over .vitoria { color: #2ecc71; }
         .game-over .derrota { color: #e74c3c; }
         
         .timer-bar {
             width: 100%;
-            height: 6px;
+            height: 5px;
             background: rgba(0,0,0,0.3);
             border-radius: 3px;
             overflow: hidden;
@@ -330,12 +316,26 @@
             transition: width 0.1s;
         }
         
+        .energia-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #f39c12;
+            padding: 4px 12px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+        }
+        .energia-display .max-energia { color: #bdc3c7; font-size: 14px; }
+        
         @media (max-width: 500px) {
-            .container { padding: 12px; }
+            .container { padding: 10px; }
             .arena { height: 380px; max-width: 100%; }
             .deck-container { grid-template-columns: repeat(5, 1fr); gap: 4px; }
-            .carta { padding: 6px 3px; font-size: 9px; }
-            .carta .emoji { font-size: 18px; }
+            .carta { padding: 6px 3px; font-size: 8px; }
+            .carta .emoji { font-size: 16px; }
             .torre { width: 28px; height: 28px; font-size: 12px; }
             .torre-rei { width: 36px; height: 36px; font-size: 16px; }
             .tropa { width: 26px; height: 26px; font-size: 14px; }
@@ -347,8 +347,9 @@
             .torre-dir-inf { bottom: 50px; right: 18px; }
             .torre-esq-sup { top: 50px; left: 18px; }
             .torre-dir-sup { top: 50px; right: 18px; }
-            .hotbar-item { padding: 4px 2px; font-size: 9px; }
-            .hotbar-item .emoji { font-size: 16px; }
+            .hotbar-item { padding: 3px 2px; font-size: 8px; }
+            .hotbar-item .emoji { font-size: 14px; }
+            .info-battle { font-size: 10px; }
         }
     </style>
 </head>
@@ -359,64 +360,74 @@
     
     <!-- Tela Inicial -->
     <div id="tela-inicial">
-        <p style="margin-bottom: 12px; color: #bdc3c7;">Monte seu deck e batalhe contra a IA!</p>
+        <p style="margin-bottom: 10px; color: #bdc3c7;">Monte seu deck e batalhe contra a IA!</p>
         <button onclick="iniciarJogo()">▶️ Iniciar Batalha</button>
     </div>
 
     <!-- Tela Deck -->
     <div id="tela-deck" class="hidden">
         <h2>🛡️ Monte seu Deck</h2>
-        <p style="color: #bdc3c7; font-size: 13px; margin-bottom: 8px;">Escolha 5 guerreiros para seu deck</p>
+        <p style="color: #bdc3c7; font-size: 13px; margin-bottom: 6px;">Escolha 5 guerreiros para seu deck</p>
         <div class="deck-container" id="selecao-cartas">
             <div class="carta" onclick="toggleCarta('Megacavaleiro')">
                 <span class="emoji">⚔️</span>
                 <span class="nome">Megacavaleiro</span>
-                <span class="stats">HP:1200 • ATK:80</span>
+                <span class="custo">⚡6</span>
+                <span class="stats">HP:1200 ATK:80</span>
             </div>
             <div class="carta" onclick="toggleCarta('Corredor')">
                 <span class="emoji">🐷</span>
                 <span class="nome">Corredor</span>
-                <span class="stats">HP:900 • ATK:100</span>
+                <span class="custo">⚡4</span>
+                <span class="stats">HP:900 ATK:100</span>
             </div>
             <div class="carta" onclick="toggleCarta('Gigante Real')">
                 <span class="emoji">👑</span>
                 <span class="nome">Gigante Real</span>
-                <span class="stats">HP:1500 • ATK:60</span>
+                <span class="custo">⚡7</span>
+                <span class="stats">HP:1500 ATK:60</span>
             </div>
             <div class="carta" onclick="toggleCarta('P.E.K.K.A')">
                 <span class="emoji">🤖</span>
                 <span class="nome">P.E.K.K.A</span>
-                <span class="stats">HP:1000 • ATK:120</span>
+                <span class="custo">⚡8</span>
+                <span class="stats">HP:1000 ATK:120</span>
             </div>
             <div class="carta" onclick="toggleCarta('Arqueiro')">
                 <span class="emoji">🏹</span>
                 <span class="nome">Arqueiro</span>
-                <span class="stats">HP:700 • ATK:90</span>
+                <span class="custo">⚡3</span>
+                <span class="stats">HP:700 ATK:90</span>
             </div>
             <div class="carta" onclick="toggleCarta('Gigante')">
                 <span class="emoji">🦍</span>
                 <span class="nome">Gigante</span>
-                <span class="stats">HP:1800 • ATK:50</span>
+                <span class="custo">⚡5</span>
+                <span class="stats">HP:1800 ATK:50</span>
             </div>
             <div class="carta" onclick="toggleCarta('Bruxa')">
                 <span class="emoji">🧙</span>
                 <span class="nome">Bruxa</span>
-                <span class="stats">HP:800 • ATK:70</span>
+                <span class="custo">⚡5</span>
+                <span class="stats">HP:800 ATK:70</span>
             </div>
             <div class="carta" onclick="toggleCarta('Golem')">
                 <span class="emoji">🗿</span>
                 <span class="nome">Golem</span>
-                <span class="stats">HP:2000 • ATK:40</span>
+                <span class="custo">⚡8</span>
+                <span class="stats">HP:2000 ATK:40</span>
             </div>
             <div class="carta" onclick="toggleCarta('Lorde')">
                 <span class="emoji">⚡</span>
                 <span class="nome">Lorde</span>
-                <span class="stats">HP:1100 • ATK:85</span>
+                <span class="custo">⚡4</span>
+                <span class="stats">HP:1100 ATK:85</span>
             </div>
             <div class="carta" onclick="toggleCarta('Dragão')">
                 <span class="emoji">🐉</span>
                 <span class="nome">Dragão</span>
-                <span class="stats">HP:1300 • ATK:75</span>
+                <span class="custo">⚡7</span>
+                <span class="stats">HP:1300 ATK:75</span>
             </div>
         </div>
         <p id="deck-status" style="color: #f39c12; font-size: 13px;">Selecione 5 cartas</p>
@@ -428,6 +439,7 @@
     <div id="tela-jogo" class="hidden" style="position: relative;">
         <div class="info-battle">
             <span>🏰 Seu Rei: <span id="hp-rei-aliado" class="hp-total">2000</span></span>
+            <span class="energia-display">⚡ <span id="energia-aliado">10</span><span class="max-energia">/10</span></span>
             <span>⚔️ <span id="tropas-aliadas">0</span> vs <span id="tropas-inimigas">0</span></span>
             <span>👑 Rei Inimigo: <span id="hp-rei-inimigo" class="hp-total inimigo">2000</span></span>
         </div>
@@ -502,12 +514,12 @@
         <div class="timer-bar">
             <div class="timer-fill" id="timer-fill" style="width:100%"></div>
         </div>
-        <div style="display: flex; gap: 6px; margin-top: 6px;">
-            <button onclick="enviarTropa('esquerda')" style="flex:1; padding: 10px; font-size: 13px;">⬅️ Esq</button>
-            <button onclick="enviarTropa('centro')" style="flex:1; padding: 10px; font-size: 13px;">⬆️ Centro</button>
-            <button onclick="enviarTropa('direita')" style="flex:1; padding: 10px; font-size: 13px;">➡️ Dir</button>
+        <div style="display: flex; gap: 6px; margin-top: 4px;">
+            <button onclick="enviarTropa('esquerda')" style="flex:1; padding: 8px; font-size: 12px;">⬅️ Esq</button>
+            <button onclick="enviarTropa('centro')" style="flex:1; padding: 8px; font-size: 12px;">⬆️ Centro</button>
+            <button onclick="enviarTropa('direita')" style="flex:1; padding: 8px; font-size: 12px;">➡️ Dir</button>
         </div>
-        <button class="danger" onclick="voltarInicio()" style="margin-top:6px; padding: 8px;">⏹️ Sair</button>
+        <button class="danger" onclick="voltarInicio()" style="margin-top:4px; padding: 6px;">⏹️ Sair</button>
     </div>
 </div>
 
@@ -521,19 +533,28 @@
     let intervalos = [];
     let frameId = null;
     let tempoRecarga = 0;
-    const TEMPO_MAX_RECARGA = 180; // ~3 segundos a 60fps
+    const TEMPO_MAX_RECARGA = 120; // ~2 segundos a 60fps
+    
+    // Sistema de energia
+    let energiaAliado = 10;
+    let energiaInimigo = 10;
+    const MAX_ENERGIA = 10;
+    const ENERGIA_RECARGA = 1; // Quantidade por tick
+    const INTERVALO_RECARGA = 60; // Frames entre recargas
+    
+    let contadorRecarga = 0;
 
     const CARTAS = {
-        'Megacavaleiro': { hp: 1200, atk: 80, speed: 1.2, range: 35, emoji: '⚔️', nome: 'Megacavaleiro' },
-        'Corredor': { hp: 900, atk: 100, speed: 1.8, range: 30, emoji: '🐷', nome: 'Corredor' },
-        'Gigante Real': { hp: 1500, atk: 60, speed: 0.8, range: 40, emoji: '👑', nome: 'Gigante Real' },
-        'P.E.K.K.A': { hp: 1000, atk: 120, speed: 1.0, range: 25, emoji: '🤖', nome: 'P.E.K.K.A' },
-        'Arqueiro': { hp: 700, atk: 90, speed: 1.6, range: 45, emoji: '🏹', nome: 'Arqueiro' },
-        'Gigante': { hp: 1800, atk: 50, speed: 0.7, range: 30, emoji: '🦍', nome: 'Gigante' },
-        'Bruxa': { hp: 800, atk: 70, speed: 1.3, range: 38, emoji: '🧙', nome: 'Bruxa' },
-        'Golem': { hp: 2000, atk: 40, speed: 0.6, range: 28, emoji: '🗿', nome: 'Golem' },
-        'Lorde': { hp: 1100, atk: 85, speed: 1.4, range: 32, emoji: '⚡', nome: 'Lorde' },
-        'Dragão': { hp: 1300, atk: 75, speed: 1.1, range: 36, emoji: '🐉', nome: 'Dragão' }
+        'Megacavaleiro': { hp: 1200, atk: 80, speed: 1.2, range: 35, custo: 6, emoji: '⚔️', nome: 'Megacavaleiro' },
+        'Corredor': { hp: 900, atk: 100, speed: 1.8, range: 30, custo: 4, emoji: '🐷', nome: 'Corredor' },
+        'Gigante Real': { hp: 1500, atk: 60, speed: 0.8, range: 40, custo: 7, emoji: '👑', nome: 'Gigante Real' },
+        'P.E.K.K.A': { hp: 1000, atk: 120, speed: 1.0, range: 25, custo: 8, emoji: '🤖', nome: 'P.E.K.K.A' },
+        'Arqueiro': { hp: 700, atk: 90, speed: 1.6, range: 45, custo: 3, emoji: '🏹', nome: 'Arqueiro' },
+        'Gigante': { hp: 1800, atk: 50, speed: 0.7, range: 30, custo: 5, emoji: '🦍', nome: 'Gigante' },
+        'Bruxa': { hp: 800, atk: 70, speed: 1.3, range: 38, custo: 5, emoji: '🧙', nome: 'Bruxa' },
+        'Golem': { hp: 2000, atk: 40, speed: 0.6, range: 28, custo: 8, emoji: '🗿', nome: 'Golem' },
+        'Lorde': { hp: 1100, atk: 85, speed: 1.4, range: 32, custo: 4, emoji: '⚡', nome: 'Lorde' },
+        'Dragão': { hp: 1300, atk: 75, speed: 1.1, range: 36, custo: 7, emoji: '🐉', nome: 'Dragão' }
     };
 
     // ======================== FUNÇÕES DE INTERFACE ========================
@@ -552,6 +573,8 @@
         tropasAliadas = [];
         tropasInimigas = [];
         deckSelecionado = [];
+        energiaAliado = 10;
+        energiaInimigo = 10;
     }
 
     function iniciarJogo() {
@@ -574,7 +597,6 @@
             return;
         }
         
-        // Atualizar visual
         const cartas = document.querySelectorAll('.carta');
         const nomes = ['Megacavaleiro', 'Corredor', 'Gigante Real', 'P.E.K.K.A', 'Arqueiro', 'Gigante', 'Bruxa', 'Golem', 'Lorde', 'Dragão'];
         cartas.forEach((el, i) => {
@@ -612,13 +634,16 @@
                 items[i].innerHTML = `
                     <span class="emoji">${stats.emoji}</span>
                     <span class="nome">${stats.nome}</span>
-                    <span class="custo">⚡${Math.floor(stats.hp/200 + stats.atk/30)}</span>
+                    <span class="custo">⚡${stats.custo}</span>
                 `;
                 items[i].classList.add('ativo');
             }
         });
         cartaAtual = 0;
         tempoRecarga = 0;
+        energiaAliado = 10;
+        energiaInimigo = 10;
+        contadorRecarga = 0;
         
         resetarTorres();
         document.querySelectorAll('.tropa').forEach(el => el.remove());
@@ -626,6 +651,7 @@
         tropasInimigas = [];
         
         jogoAtivo = true;
+        atualizarEnergia();
         atualizarContadores();
         
         if (frameId) cancelAnimationFrame(frameId);
@@ -633,7 +659,7 @@
         
         setTimeout(() => {
             if (jogoAtivo) enviarTropaIA();
-        }, 1500);
+        }, 2000);
     }
 
     function resetarTorres() {
@@ -653,6 +679,52 @@
         if (frameId) cancelAnimationFrame(frameId);
         intervalos.forEach(id => clearTimeout(id));
         intervalos = [];
+    }
+
+    // ======================== SISTEMA DE ENERGIA ========================
+    function recarregarEnergia() {
+        contadorRecarga++;
+        if (contadorRecarga >= INTERVALO_RECARGA) {
+            contadorRecarga = 0;
+            if (energiaAliado < MAX_ENERGIA) {
+                energiaAliado = Math.min(MAX_ENERGIA, energiaAliado + ENERGIA_RECARGA);
+            }
+            if (energiaInimigo < MAX_ENERGIA) {
+                energiaInimigo = Math.min(MAX_ENERGIA, energiaInimigo + ENERGIA_RECARGA);
+            }
+            atualizarEnergia();
+            atualizarCustosHotbar();
+        }
+    }
+
+    function ganharEnergia(tipo) {
+        if (tipo === 'aliado') {
+            energiaAliado = Math.min(MAX_ENERGIA, energiaAliado + 3);
+        } else {
+            energiaInimigo = Math.min(MAX_ENERGIA, energiaInimigo + 3);
+        }
+        atualizarEnergia();
+        atualizarCustosHotbar();
+    }
+
+    function atualizarEnergia() {
+        document.getElementById('energia-aliado').textContent = Math.floor(energiaAliado);
+    }
+
+    function atualizarCustosHotbar() {
+        const items = document.querySelectorAll('.hotbar-item');
+        items.forEach((el, i) => {
+            if (i < deckSelecionado.length) {
+                const nome = deckSelecionado[i];
+                const stats = CARTAS[nome];
+                const custo = stats.custo;
+                const custoEl = el.querySelector('.custo');
+                if (custoEl) {
+                    custoEl.className = `custo${energiaAliado < custo ? ' insuficiente' : ''}`;
+                }
+                el.style.opacity = energiaAliado < custo ? '0.5' : '1';
+            }
+        });
     }
 
     // ======================== SISTEMA DE TROPAS ========================
@@ -686,7 +758,8 @@
             alvo: null,
             estado: 'andando',
             cooldown: 0,
-            atacando: false
+            atacando: false,
+            ultimoAtaque: 0
         };
         
         if (time === 'aliado') {
@@ -704,7 +777,20 @@
         if (tempoRecarga > 0) return;
         
         const tipo = deckSelecionado[cartaAtual];
-        if (!tipo) return;
+        const stats = CARTAS[tipo];
+        if (!stats) return;
+        if (energiaAliado < stats.custo) {
+            // Feedback visual de energia insuficiente
+            const energiaEl = document.getElementById('energia-aliado');
+            energiaEl.style.color = '#e74c3c';
+            setTimeout(() => energiaEl.style.color = '#f39c12', 500);
+            return;
+        }
+        
+        // Gasta energia
+        energiaAliado -= stats.custo;
+        atualizarEnergia();
+        atualizarCustosHotbar();
         
         const arena = document.getElementById('arena');
         const arenaWidth = arena.offsetWidth;
@@ -725,13 +811,34 @@
         document.querySelectorAll('.hotbar-item').forEach((el, i) => {
             el.classList.toggle('ativo', i === cartaAtual);
         });
+        atualizarCustosHotbar();
     }
 
     function enviarTropaIA() {
         if (!jogoAtivo) return;
         
-        const tipos = deckSelecionado.length > 0 ? deckSelecionado : Object.keys(CARTAS);
-        const tipo = tipos[Math.floor(Math.random() * tipos.length)];
+        // IA verifica se tem energia suficiente
+        const tiposDisponiveis = deckSelecionado.filter(nome => {
+            return CARTAS[nome].custo <= energiaInimigo;
+        });
+        
+        if (tiposDisponiveis.length === 0) {
+            // Recarregar energia da IA
+            energiaInimigo = Math.min(MAX_ENERGIA, energiaInimigo + 2);
+            atualizarEnergia();
+            const delay = 1000 + Math.random() * 2000;
+            const id = setTimeout(() => {
+                if (jogoAtivo) enviarTropaIA();
+            }, delay);
+            intervalos.push(id);
+            return;
+        }
+        
+        const tipo = tiposDisponiveis[Math.floor(Math.random() * tiposDisponiveis.length)];
+        const stats = CARTAS[tipo];
+        energiaInimigo -= stats.custo;
+        atualizarEnergia();
+        
         const arena = document.getElementById('arena');
         const arenaWidth = arena.offsetWidth;
         
@@ -751,6 +858,9 @@
     function loopJogo() {
         if (!jogoAtivo) return;
         
+        // Recarregar energia
+        recarregarEnergia();
+        
         // Atualizar tempo de recarga
         if (tempoRecarga > 0) {
             tempoRecarga--;
@@ -761,7 +871,6 @@
         }
         
         moverTropas();
-        atualizarTropas();
         atualizarContadores();
         atualizarHpReis();
         verificarFimDeJogo();
@@ -771,6 +880,9 @@
 
     function moverTropas() {
         const todasTropas = [...tropasAliadas, ...tropasInimigas];
+        const arena = document.getElementById('arena');
+        const arenaWidth = arena.offsetWidth;
+        const arenaHeight = arena.offsetHeight;
         
         for (const tropa of todasTropas) {
             if (tropa.estado === 'morto') continue;
@@ -786,8 +898,10 @@
                 if (dist <= tropa.range) {
                     // Atacar
                     tropa.estado = 'atacando';
-                    if (!tropa.atacando) {
+                    const agora = Date.now();
+                    if (!tropa.atacando && agora - tropa.ultimoAtaque > 400) {
                         tropa.atacando = true;
+                        tropa.ultimoAtaque = agora;
                         tropa.el.classList.add('atacando');
                         atacar(tropa, tropa.alvo);
                         setTimeout(() => {
@@ -799,7 +913,7 @@
                     // Mover em direção ao alvo
                     tropa.estado = 'andando';
                     const angle = Math.atan2(dy, dx);
-                    const speed = tropa.speed * 1.8;
+                    const speed = tropa.speed * 2.0;
                     tropa.x += Math.cos(angle) * speed;
                     tropa.y += Math.sin(angle) * speed;
                 }
@@ -807,16 +921,13 @@
                 // Sem alvo, andar em direção ao inimigo
                 tropa.estado = 'andando';
                 if (tropa.time === 'aliado') {
-                    tropa.y -= tropa.speed * 0.8;
+                    tropa.y -= tropa.speed * 1.2;
                 } else {
-                    tropa.y += tropa.speed * 0.8;
+                    tropa.y += tropa.speed * 1.2;
                 }
             }
             
             // Limites da arena
-            const arena = document.getElementById('arena');
-            const arenaWidth = arena.offsetWidth;
-            const arenaHeight = arena.offsetHeight;
             tropa.x = Math.max(5, Math.min(arenaWidth - 35, tropa.x));
             tropa.y = Math.max(5, Math.min(arenaHeight - 35, tropa.y));
             
@@ -830,24 +941,6 @@
         }
         
         removerMortos();
-    }
-
-    function atualizarTropas() {
-        // Remove tropas que saíram da arena
-        const arena = document.getElementById('arena');
-        const arenaHeight = arena.offsetHeight;
-        
-        tropasAliadas = tropasAliadas.filter(t => {
-            if (t.estado === 'morto') { t.el.remove(); return false; }
-            if (t.y < -50) { t.el.remove(); return false; }
-            return true;
-        });
-        
-        tropasInimigas = tropasInimigas.filter(t => {
-            if (t.estado === 'morto') { t.el.remove(); return false; }
-            if (t.y > arenaHeight + 50) { t.el.remove(); return false; }
-            return true;
-        });
     }
 
     function encontrarAlvo(tropa) {
@@ -876,7 +969,7 @@
                 el, 
                 id, 
                 distancia: 999,
-                prioridade: 1 // Torres têm prioridade menor que tropas
+                prioridade: 1
             });
         }
         
@@ -891,7 +984,7 @@
                 hp: t.hp, 
                 tropa: t, 
                 distancia: 999,
-                prioridade: 0 // Tropas têm prioridade maior
+                prioridade: 0
             });
         }
         
@@ -902,21 +995,20 @@
             alvo.distancia = Math.sqrt(dx*dx + dy*dy);
         }
         
-        // Ordenar por prioridade (tropas primeiro) e depois distância
+        // Ordenar por prioridade e distância
         alvos.sort((a, b) => {
             if (a.prioridade !== b.prioridade) return a.prioridade - b.prioridade;
             return a.distancia - b.distancia;
         });
         
-        // Pegar o alvo mais próximo com prioridade
+        // Pegar o alvo mais próximo
         for (const alvo of alvos) {
-            const maxDist = alvo.tipo === 'tropa' ? 250 : 350;
+            const maxDist = alvo.tipo === 'tropa' ? 300 : 400;
             if (alvo.distancia < maxDist) {
                 return alvo.tropa || alvo;
             }
         }
         
-        // Se não encontrou nenhum alvo próximo, pegar o mais próximo
         return alvos.length > 0 ? (alvos[0].tropa || alvos[0]) : null;
     }
 
@@ -940,37 +1032,55 @@
             tropaAlvo.hp -= dano;
             if (tropaAlvo.hp <= 0) {
                 tropaAlvo.estado = 'morto';
+                // Ganhar energia ao matar tropa inimiga
+                if (atacante.time === 'aliado') {
+                    ganharEnergia('aliado');
+                } else {
+                    ganharEnergia('inimigo');
+                }
             }
         } else {
             alvo.hp -= dano;
             if (alvo.hp <= 0) {
                 alvo.estado = 'morto';
+                if (atacante.time === 'aliado') {
+                    ganharEnergia('aliado');
+                } else {
+                    ganharEnergia('inimigo');
+                }
             }
         }
     }
 
     function removerMortos() {
+        const mortosAliados = tropasAliadas.filter(t => t.estado === 'morto' || t.hp <= 0);
+        const mortosInimigos = tropasInimigas.filter(t => t.estado === 'morto' || t.hp <= 0);
+        
+        mortosAliados.forEach(t => t.el.remove());
+        mortosInimigos.forEach(t => t.el.remove());
+        
+        tropasAliadas = tropasAliadas.filter(t => t.estado !== 'morto' && t.hp > 0);
+        tropasInimigas = tropasInimigas.filter(t => t.estado !== 'morto' && t.hp > 0);
+        
+        // Remover tropas fora da arena
+        const arena = document.getElementById('arena');
+        const arenaHeight = arena.offsetHeight;
         tropasAliadas = tropasAliadas.filter(t => {
-            if (t.estado === 'morto' || t.hp <= 0) {
-                t.el.remove();
-                return false;
-            }
+            if (t.y < -50) { t.el.remove(); return false; }
             return true;
         });
-        
         tropasInimigas = tropasInimigas.filter(t => {
-            if (t.estado === 'morto' || t.hp <= 0) {
-                t.el.remove();
-                return false;
-            }
+            if (t.y > arenaHeight + 50) { t.el.remove(); return false; }
             return true;
         });
     }
 
     // ======================== ATUALIZAR UI ========================
     function atualizarContadores() {
-        document.getElementById('tropas-aliadas').textContent = tropasAliadas.filter(t => t.estado !== 'morto').length;
-        document.getElementById('tropas-inimigas').textContent = tropasInimigas.filter(t => t.estado !== 'morto').length;
+        const aliadas = tropasAliadas.filter(t => t.estado !== 'morto').length;
+        const inimigas = tropasInimigas.filter(t => t.estado !== 'morto').length;
+        document.getElementById('tropas-aliadas').textContent = aliadas;
+        document.getElementById('tropas-inimigas').textContent = inimigas;
     }
 
     function atualizarHpReis() {
@@ -1009,16 +1119,21 @@
         tropasAliadas = [];
         tropasInimigas = [];
         resetarTorres();
+        energiaAliado = 10;
+        energiaInimigo = 10;
+        contadorRecarga = 0;
         jogoAtivo = true;
         tempoRecarga = 0;
+        atualizarEnergia();
         atualizarContadores();
+        atualizarCustosHotbar();
         
         if (frameId) cancelAnimationFrame(frameId);
         loopJogo();
         
         setTimeout(() => {
             if (jogoAtivo) enviarTropaIA();
-        }, 1500);
+        }, 2000);
     }
 
     // ======================== INICIALIZAÇÃO ========================
