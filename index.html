@@ -79,6 +79,9 @@
         button.danger {
             background: linear-gradient(45deg, #e74c3c, #c0392b);
         }
+        button.danger:hover {
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+        }
         
         input {
             width: 100%;
@@ -122,6 +125,7 @@
         .carta.selecionada {
             border-color: #2ecc71;
             background: linear-gradient(135deg, #27ae60, #1e8449);
+            box-shadow: 0 0 20px rgba(46, 204, 113, 0.3);
         }
         .carta .emoji {
             font-size: 30px;
@@ -190,7 +194,7 @@
             transform: translateX(-50%);
             width: 30px;
             height: 4px;
-            background: #2c3e50;
+            background: rgba(0,0,0,0.6);
             border-radius: 2px;
             overflow: hidden;
         }
@@ -237,7 +241,7 @@
             transform: translateX(-50%);
             width: 24px;
             height: 3px;
-            background: #2c3e50;
+            background: rgba(0,0,0,0.6);
             border-radius: 2px;
             overflow: hidden;
         }
@@ -256,6 +260,7 @@
             background: rgba(0,0,0,0.7);
             padding: 1px 4px;
             border-radius: 3px;
+            color: #ecf0f1;
         }
         
         .info-battle {
@@ -279,11 +284,12 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
             padding: 30px 40px;
             border-radius: 15px;
             z-index: 100;
             border: 3px solid #f39c12;
+            min-width: 250px;
         }
         .game-over h2 {
             font-size: 28px;
@@ -354,7 +360,7 @@
     </div>
 
     <!-- Tela Jogo -->
-    <div id="tela-jogo" class="hidden">
+    <div id="tela-jogo" class="hidden" style="position: relative;">
         <div class="info-battle">
             <span>🏰 Seu Rei: <span id="hp-rei-aliado" class="hp-total">2000</span></span>
             <span>⚔️ <span id="tropas-aliadas">0</span> vs <span id="tropas-inimigas">0</span></span>
@@ -393,6 +399,14 @@
                 🏰
                 <div class="hp-bar"><div class="hp-fill" style="width:100%"></div></div>
             </div>
+
+            <!-- Game Over Overlay -->
+            <div id="game-over" class="hidden game-over">
+                <h2 id="resultado-texto"></h2>
+                <p id="resultado-sub" style="margin: 10px 0; color: #bdc3c7;"></p>
+                <button onclick="reiniciarJogo()" style="margin-top: 10px;">🔄 Jogar Novamente</button>
+                <button class="secondary" onclick="voltarInicio()">🏠 Menu</button>
+            </div>
         </div>
         
         <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
@@ -401,14 +415,6 @@
             <button onclick="enviarTropa('direita')" style="flex:1; min-width:80px;">➡️ Dir</button>
         </div>
         <button class="danger" onclick="voltarInicio()" style="margin-top:8px;">⏹️ Sair</button>
-    </div>
-
-    <!-- Game Over Overlay -->
-    <div id="game-over" class="hidden game-over">
-        <h2 id="resultado-texto"></h2>
-        <p id="resultado-sub" style="margin: 10px 0;"></p>
-        <button onclick="reiniciarJogo()">🔄 Jogar Novamente</button>
-        <button class="secondary" onclick="voltarInicio()">🏠 Menu</button>
     </div>
 </div>
 
@@ -441,6 +447,10 @@
         pararJogo();
         mostrarTela('tela-inicial');
         document.getElementById('game-over').classList.add('hidden');
+        // Limpar tropas
+        document.querySelectorAll('.tropa').forEach(el => el.remove());
+        tropasAliadas = [];
+        tropasInimigas = [];
     }
 
     function iniciarJogo() {
@@ -454,7 +464,13 @@
     function escolherCarta(nome) {
         cartaSelecionada = nome;
         document.querySelectorAll('.carta').forEach(c => c.classList.remove('selecionada'));
-        document.getElementById('btn-' + nome.toLowerCase().replace(/\./g, '').replace(/ /g, '')).classList.add('selecionada');
+        const idMap = {
+            'Megacavaleiro': 'btn-megacavaleiro',
+            'Corredor': 'btn-corredor',
+            'Gigante Real': 'btn-gigantereal',
+            'P.E.K.K.A': 'btn-pekka'
+        };
+        document.getElementById(idMap[nome]).classList.add('selecionada');
         document.getElementById('btn-confirmar').disabled = false;
     }
 
@@ -465,7 +481,21 @@
 
     function reiniciarJogo() {
         document.getElementById('game-over').classList.add('hidden');
-        iniciarJogo();
+        // Resetar torres
+        resetarTorres();
+        // Limpar tropas
+        document.querySelectorAll('.tropa').forEach(el => el.remove());
+        tropasAliadas = [];
+        tropasInimigas = [];
+        jogoAtivo = true;
+        atualizarContadores();
+        // Iniciar novamente
+        if (frameId) cancelAnimationFrame(frameId);
+        loopJogo();
+        // IA começa a enviar tropas
+        setTimeout(() => {
+            if (jogoAtivo) enviarTropaIA();
+        }, 2000);
     }
 
     // ======================== LÓGICA DA BATALHA ========================
@@ -477,9 +507,9 @@
         resetarTorres();
         
         // Limpar tropas
+        document.querySelectorAll('.tropa').forEach(el => el.remove());
         tropasAliadas = [];
         tropasInimigas = [];
-        document.querySelectorAll('.tropa').forEach(el => el.remove());
         
         jogoAtivo = true;
         atualizarContadores();
@@ -509,7 +539,7 @@
     function pararJogo() {
         jogoAtivo = false;
         if (frameId) cancelAnimationFrame(frameId);
-        intervalos.forEach(id => clearInterval(id));
+        intervalos.forEach(id => clearTimeout(id));
         intervalos = [];
     }
 
@@ -542,7 +572,7 @@
             speed: stats.speed,
             range: stats.range,
             alvo: null,
-            estado: 'andando', // andando, atacando, morto
+            estado: 'andando',
             cooldown: 0,
             targetType: time === 'aliado' ? 'inimigo' : 'aliado'
         };
@@ -561,7 +591,6 @@
         if (!jogoAtivo || !cartaSelecionada) return;
         
         const arena = document.getElementById('arena');
-        const rect = arena.getBoundingClientRect();
         const arenaWidth = arena.offsetWidth;
         const arenaHeight = arena.offsetHeight;
         
@@ -631,14 +660,12 @@
                 const dist = Math.sqrt(dx*dx + dy*dy);
                 
                 if (dist <= tropa.range) {
-                    // Atacar
                     tropa.estado = 'atacando';
                     if (tropa.cooldown <= 0) {
                         atacar(tropa, tropa.alvo);
-                        tropa.cooldown = 30; // frames de cooldown
+                        tropa.cooldown = 30;
                     }
                 } else {
-                    // Mover em direção ao alvo
                     tropa.estado = 'andando';
                     const angle = Math.atan2(dy, dx);
                     const speed = tropa.speed * 1.5;
@@ -646,7 +673,6 @@
                     tropa.y += Math.sin(angle) * speed;
                 }
             } else {
-                // Sem alvo, andar para frente
                 tropa.estado = 'andando';
                 if (tropa.time === 'aliado') {
                     tropa.y -= tropa.speed;
@@ -695,13 +721,13 @@
         }
         
         // Tropas inimigas
-        const tropasInimigas = isAliado ? tropasInimigas : tropasAliadas;
+        const tropasInimigas = isAliado ? window.tropasInimigas : window.tropasAliadas;
         for (const t of tropasInimigas) {
             if (t.estado === 'morto') continue;
             alvos.push({ tipo: 'tropa', x: t.x, y: t.y, hp: t.hp, tropa: t, distancia: 999 });
         }
         
-        // Calcular distâncias e pegar o mais próximo
+        // Calcular distâncias
         for (const alvo of alvos) {
             const dx = alvo.x - tropa.x;
             const dy = alvo.y - tropa.y;
@@ -727,7 +753,6 @@
         const dano = atacante.atk;
         
         if (alvo.tipo === 'torre' || alvo.id) {
-            // É uma torre
             const id = alvo.id || alvo;
             const el = document.getElementById(id);
             if (!el) return;
@@ -737,14 +762,12 @@
             const hpPercent = (novoHp / parseInt(el.dataset.maxhp)) * 100;
             el.querySelector('.hp-fill').style.width = Math.max(0, hpPercent) + '%';
         } else if (alvo.tropa) {
-            // É uma tropa
             const tropaAlvo = alvo.tropa || alvo;
             tropaAlvo.hp -= dano;
             if (tropaAlvo.hp <= 0) {
                 tropaAlvo.estado = 'morto';
             }
         } else {
-            // É uma tropa diretamente
             alvo.hp -= dano;
             if (alvo.hp <= 0) {
                 alvo.estado = 'morto';
@@ -753,7 +776,6 @@
     }
 
     function removerMortos() {
-        // Remover tropas mortas
         tropasAliadas = tropasAliadas.filter(t => {
             if (t.estado === 'morto' || t.hp <= 0) {
                 t.el.remove();
@@ -808,10 +830,7 @@
     }
 
     // ======================== INICIALIZAÇÃO ========================
-    // Garantir que o jogo comece na tela inicial
     mostrarTela('tela-inicial');
-
-    // Prevenir clique duplo nas cartas
     console.log('⚔️ Clash Royale Web carregado!');
 </script>
 </body>
