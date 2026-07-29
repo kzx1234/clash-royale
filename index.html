@@ -550,7 +550,8 @@
         </div>
         
         <div class="controles-extra">
-            <button class="correr" id="btn-correr" onclick="toggleCorrer()">🏃 CORRER</button>
+            <!-- Botão CORRER REFEITO -->
+            <button class="correr" id="btn-correr" onclick="iniciarAtaqueAutomatico()">🏃 CORRER</button>
             <button onclick="enviarTropa('esquerda')" style="padding: 6px;">⬅️ ESQ</button>
             <button onclick="enviarTropa('centro')" style="padding: 6px;">⬆️ CENTRO</button>
             <button onclick="enviarTropa('direita')" style="padding: 6px;">➡️ DIR</button>
@@ -579,9 +580,9 @@
     const INTERVALO_RECARGA = 60;
     let contadorRecarga = 0;
     
-    // Sistema de correr
-    let modoCorrer = false;
-    let velocidadeMultiplicador = 1;
+    // Sistema de correr automático (REFORMULADO)
+    let corridaAutomaticaAtiva = false;
+    let idCorridaAutomatica = null;
 
     const CARTAS = {
         'Megacavaleiro': { hp: 1200, atk: 80, speed: 1.2, range: 35, custo: 6, emoji: '⚔️', nome: 'Megacavaleiro' },
@@ -606,6 +607,7 @@
 
     function voltarInicio() {
         pararJogo();
+        pararCorridaAutomatica();
         mostrarTela('tela-inicial');
         document.getElementById('game-over').classList.add('hidden');
         document.querySelectorAll('.tropa').forEach(el => el.remove());
@@ -614,7 +616,6 @@
         deckSelecionado = [];
         energiaAliado = 10;
         energiaInimigo = 10;
-        modoCorrer = false;
         document.getElementById('btn-correr').classList.remove('ativo');
         document.getElementById('btn-correr').textContent = '🏃 CORRER';
     }
@@ -663,25 +664,63 @@
         });
     }
 
-    function toggleCorrer() {
-        modoCorrer = !modoCorrer;
+    // ======================== NOVO SISTEMA DE CORRER ========================
+    function iniciarAtaqueAutomatico() {
+        if (!jogoAtivo) return;
+        
+        // Alterna entre ligar e desligar
+        corridaAutomaticaAtiva = !corridaAutomaticaAtiva;
         const btn = document.getElementById('btn-correr');
-        if (modoCorrer) {
+        
+        if (corridaAutomaticaAtiva) {
             btn.classList.add('ativo');
-            btn.textContent = '🏃 CORRENDO!';
-            velocidadeMultiplicador = 2.5;
-            // Aplicar efeito visual nas tropas
-            document.querySelectorAll('.tropa.aliado').forEach(el => {
-                el.classList.add('correndo');
-            });
+            btn.textContent = '⏹️ PARAR CORRIDA';
+            executarAtaqueAutomatico();
         } else {
+            pararCorridaAutomatica();
             btn.classList.remove('ativo');
             btn.textContent = '🏃 CORRER';
-            velocidadeMultiplicador = 1;
-            document.querySelectorAll('.tropa.aliado').forEach(el => {
-                el.classList.remove('correndo');
-            });
         }
+    }
+
+    function executarAtaqueAutomatico() {
+        if (!corridaAutomaticaAtiva || !jogoAtivo) return;
+
+        // Pega a primeira carta do deck para usar no ataque automático
+        if (deckSelecionado.length > 0) {
+            const tipo = deckSelecionado[0];
+            const stats = CARTAS[tipo];
+            
+            // Verifica se tem energia suficiente
+            if (energiaAliado >= stats.custo) {
+                // Envia a tropa automaticamente para a posição CENTRO, ou com um pequeno desvio
+                enviarTropa('centro');
+                
+                // Adiciona um efeito visual na tropa que acabou de nascer
+                const ultimaTropa = tropasAliadas[tropasAliadas.length - 1];
+                if (ultimaTropa) {
+                    ultimaTropa.el.classList.add('correndo');
+                    setTimeout(() => {
+                        if(ultimaTropa.el) ultimaTropa.el.classList.remove('correndo');
+                    }, 500);
+                }
+            }
+        }
+
+        // Loop recursivo (executa a cada 1.5 segundos, dando tempo de recarregar energia)
+        idCorridaAutomatica = setTimeout(() => {
+            executarAtaqueAutomatico();
+        }, 1500);
+    }
+
+    function pararCorridaAutomatica() {
+        corridaAutomaticaAtiva = false;
+        if (idCorridaAutomatica) {
+            clearTimeout(idCorridaAutomatica);
+            idCorridaAutomatica = null;
+        }
+        document.getElementById('btn-correr').classList.remove('ativo');
+        document.getElementById('btn-correr').textContent = '🏃 CORRER';
     }
 
     // ======================== LÓGICA DA BATALHA ========================
@@ -706,15 +745,12 @@
         energiaAliado = 10;
         energiaInimigo = 10;
         contadorRecarga = 0;
-        modoCorrer = false;
-        velocidadeMultiplicador = 1;
-        document.getElementById('btn-correr').classList.remove('ativo');
-        document.getElementById('btn-correr').textContent = '🏃 CORRER';
         
         resetarTorres();
         document.querySelectorAll('.tropa').forEach(el => el.remove());
         tropasAliadas = [];
         tropasInimigas = [];
+        pararCorridaAutomatica();
         
         jogoAtivo = true;
         atualizarEnergia();
@@ -745,6 +781,7 @@
         if (frameId) cancelAnimationFrame(frameId);
         intervalos.forEach(id => clearTimeout(id));
         intervalos = [];
+        pararCorridaAutomatica();
     }
 
     // ======================== SISTEMA DE ENERGIA ========================
@@ -825,8 +862,7 @@
             estado: 'andando',
             cooldown: 0,
             atacando: false,
-            ultimoAtaque: 0,
-            correndo: false
+            ultimoAtaque: 0
         };
         
         if (time === 'aliado') {
@@ -868,11 +904,7 @@
         
         const y = arenaHeight - 60 - Math.random() * 40;
         
-        const novaTropa = criarTropa(tipo, 'aliado', x, y);
-        if (novaTropa && modoCorrer) {
-            novaTropa.correndo = true;
-            novaTropa.el.classList.add('correndo');
-        }
+        criarTropa(tipo, 'aliado', x, y);
         
         tempoRecarga = TEMPO_MAX_RECARGA;
         
@@ -952,21 +984,12 @@
         for (const tropa of todasTropas) {
             if (tropa.estado === 'morto') continue;
             
-            // Aplicar velocidade de corrida
-            let velocidadeAtual = tropa.speed;
-            if (tropa.time === 'aliado' && modoCorrer) {
-                velocidadeAtual = tropa.speed * 2.5;
-                if (!tropa.correndo) {
-                    tropa.correndo = true;
-                    tropa.el.classList.add('correndo');
-                }
-            } else if (tropa.correndo) {
-                tropa.correndo = false;
-                tropa.el.classList.remove('correndo');
-            }
-            
+            // Sempre anda em direção ao alvo
             tropa.alvo = encontrarAlvo(tropa);
             
+            // Velocidade fixa sem multiplicador extra
+            let velocidadeAtual = tropa.speed * 2.0; 
+
             if (tropa.alvo) {
                 const dx = tropa.alvo.x - tropa.x;
                 const dy = tropa.alvo.y - tropa.y;
@@ -988,11 +1011,11 @@
                 } else {
                     tropa.estado = 'andando';
                     const angle = Math.atan2(dy, dx);
-                    const speed = velocidadeAtual * 2.0;
-                    tropa.x += Math.cos(angle) * speed;
-                    tropa.y += Math.sin(angle) * speed;
+                    tropa.x += Math.cos(angle) * velocidadeAtual;
+                    tropa.y += Math.sin(angle) * velocidadeAtual;
                 }
             } else {
+                // Se não tem alvo visível, corre pra cima (direção da ilha inimiga)
                 tropa.estado = 'andando';
                 if (tropa.time === 'aliado') {
                     tropa.y -= velocidadeAtual * 1.5;
@@ -1188,13 +1211,6 @@
         contadorRecarga = 0;
         jogoAtivo = true;
         tempoRecarga = 0;
-        modoCorrer = false;
-        velocidadeMultiplicador = 1;
-        document.getElementById('btn-correr').classList.remove('ativo');
-        document.getElementById('btn-correr').textContent = '🏃 CORRER';
-        atualizarEnergia();
-        atualizarContadores();
-        atualizarCustosHotbar();
         
         if (frameId) cancelAnimationFrame(frameId);
         loopJogo();
