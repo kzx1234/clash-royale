@@ -90,6 +90,7 @@
         }
         button.correr.ativo {
             background: linear-gradient(45deg, #e74c3c, #c0392b);
+            animation: none;
         }
         @keyframes pulse-correr {
             0%, 100% { transform: scale(1); }
@@ -247,18 +248,18 @@
             color: #ecf0f1;
         }
         .tropa.atacando {
-            animation: ataque 0.2s ease-in-out;
+            animation: ataque 0.3s ease-in-out;
         }
         .tropa.correndo {
             animation: corrida 0.3s ease-in-out;
         }
         @keyframes ataque {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
+            50% { transform: scale(1.15); }
         }
         @keyframes corrida {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1) rotate(5deg); }
+            50% { transform: scale(1.08) rotate(3deg); }
         }
         
         .info-battle {
@@ -550,7 +551,6 @@
         </div>
         
         <div class="controles-extra">
-            <!-- Botão CORRER REFEITO -->
             <button class="correr" id="btn-correr" onclick="iniciarAtaqueAutomatico()">🏃 CORRER</button>
             <button onclick="enviarTropa('esquerda')" style="padding: 6px;">⬅️ ESQ</button>
             <button onclick="enviarTropa('centro')" style="padding: 6px;">⬆️ CENTRO</button>
@@ -580,7 +580,7 @@
     const INTERVALO_RECARGA = 60;
     let contadorRecarga = 0;
     
-    // Sistema de correr automático (REFORMULADO)
+    // Sistema de correr automático
     let corridaAutomaticaAtiva = false;
     let idCorridaAutomatica = null;
 
@@ -664,11 +664,10 @@
         });
     }
 
-    // ======================== NOVO SISTEMA DE CORRER ========================
+    // ======================== SISTEMA DE CORRER ========================
     function iniciarAtaqueAutomatico() {
         if (!jogoAtivo) return;
         
-        // Alterna entre ligar e desligar
         corridaAutomaticaAtiva = !corridaAutomaticaAtiva;
         const btn = document.getElementById('btn-correr');
         
@@ -686,28 +685,15 @@
     function executarAtaqueAutomatico() {
         if (!corridaAutomaticaAtiva || !jogoAtivo) return;
 
-        // Pega a primeira carta do deck para usar no ataque automático
         if (deckSelecionado.length > 0) {
             const tipo = deckSelecionado[0];
             const stats = CARTAS[tipo];
             
-            // Verifica se tem energia suficiente
             if (energiaAliado >= stats.custo) {
-                // Envia a tropa automaticamente para a posição CENTRO, ou com um pequeno desvio
                 enviarTropa('centro');
-                
-                // Adiciona um efeito visual na tropa que acabou de nascer
-                const ultimaTropa = tropasAliadas[tropasAliadas.length - 1];
-                if (ultimaTropa) {
-                    ultimaTropa.el.classList.add('correndo');
-                    setTimeout(() => {
-                        if(ultimaTropa.el) ultimaTropa.el.classList.remove('correndo');
-                    }, 500);
-                }
             }
         }
 
-        // Loop recursivo (executa a cada 1.5 segundos, dando tempo de recarregar energia)
         idCorridaAutomatica = setTimeout(() => {
             executarAtaqueAutomatico();
         }, 1500);
@@ -759,6 +745,7 @@
         if (frameId) cancelAnimationFrame(frameId);
         loopJogo();
         
+        // IA começa a enviar tropas após 2 segundos
         setTimeout(() => {
             if (jogoAtivo) enviarTropaIA();
         }, 2000);
@@ -802,9 +789,9 @@
 
     function ganharEnergia(tipo) {
         if (tipo === 'aliado') {
-            energiaAliado = Math.min(MAX_ENERGIA, energiaAliado + 3);
+            energiaAliado = Math.min(MAX_ENERGIA, energiaAliado + 2);
         } else {
-            energiaInimigo = Math.min(MAX_ENERGIA, energiaInimigo + 3);
+            energiaInimigo = Math.min(MAX_ENERGIA, energiaInimigo + 2);
         }
         atualizarEnergia();
         atualizarCustosHotbar();
@@ -860,9 +847,9 @@
             range: stats.range,
             alvo: null,
             estado: 'andando',
-            cooldown: 0,
             atacando: false,
-            ultimoAtaque: 0
+            ultimoAtaque: 0,
+            cooldownAtaque: 0
         };
         
         if (time === 'aliado') {
@@ -904,7 +891,11 @@
         
         const y = arenaHeight - 60 - Math.random() * 40;
         
-        criarTropa(tipo, 'aliado', x, y);
+        const tropa = criarTropa(tipo, 'aliado', x, y);
+        if (tropa) {
+            tropa.el.classList.add('correndo');
+            setTimeout(() => tropa.el.classList.remove('correndo'), 500);
+        }
         
         tempoRecarga = TEMPO_MAX_RECARGA;
         
@@ -925,7 +916,7 @@
         if (tiposDisponiveis.length === 0) {
             energiaInimigo = Math.min(MAX_ENERGIA, energiaInimigo + 2);
             atualizarEnergia();
-            const delay = 1000 + Math.random() * 2000;
+            const delay = 1500 + Math.random() * 2000;
             const id = setTimeout(() => {
                 if (jogoAtivo) enviarTropaIA();
             }, delay);
@@ -981,49 +972,69 @@
         const arenaWidth = arena.offsetWidth;
         const arenaHeight = arena.offsetHeight;
         
+        // Atualiza alvos primeiro
+        for (const tropa of todasTropas) {
+            if (tropa.estado === 'morto') continue;
+            tropa.alvo = encontrarAlvo(tropa);
+            tropa.cooldownAtaque = Math.max(0, tropa.cooldownAtaque - 1);
+        }
+        
         for (const tropa of todasTropas) {
             if (tropa.estado === 'morto') continue;
             
-            // Sempre anda em direção ao alvo
-            tropa.alvo = encontrarAlvo(tropa);
+            const alvo = tropa.alvo;
+            let velocidade = tropa.speed * 1.8;
             
-            // Velocidade fixa sem multiplicador extra
-            let velocidadeAtual = tropa.speed * 2.0; 
-
-            if (tropa.alvo) {
-                const dx = tropa.alvo.x - tropa.x;
-                const dy = tropa.alvo.y - tropa.y;
+            if (alvo) {
+                const dx = alvo.x - tropa.x;
+                const dy = alvo.y - tropa.y;
                 const dist = Math.sqrt(dx*dx + dy*dy);
                 
                 if (dist <= tropa.range) {
-                    tropa.estado = 'atacando';
-                    const agora = Date.now();
-                    if (!tropa.atacando && agora - tropa.ultimoAtaque > 400) {
-                        tropa.atacando = true;
-                        tropa.ultimoAtaque = agora;
+                    // Ataca se estiver no range
+                    if (tropa.cooldownAtaque <= 0) {
+                        tropa.cooldownAtaque = 30; // ~0.5s de cooldown
                         tropa.el.classList.add('atacando');
-                        atacar(tropa, tropa.alvo);
-                        setTimeout(() => {
-                            tropa.atacando = false;
-                            tropa.el.classList.remove('atacando');
-                        }, 300);
+                        setTimeout(() => tropa.el.classList.remove('atacando'), 300);
+                        
+                        if (alvo.tipo === 'torre' || alvo.id) {
+                            const id = alvo.id || alvo;
+                            const el = document.getElementById(id);
+                            if (el) {
+                                const hpAtual = parseInt(el.dataset.hp);
+                                const novoHp = Math.max(0, hpAtual - tropa.atk);
+                                el.dataset.hp = novoHp;
+                                const hpPercent = (novoHp / parseInt(el.dataset.maxhp)) * 100;
+                                el.querySelector('.hp-fill').style.width = Math.max(0, hpPercent) + '%';
+                            }
+                        } else if (alvo.tropa) {
+                            const tropaAlvo = alvo.tropa || alvo;
+                            if (tropaAlvo.estado !== 'morto') {
+                                tropaAlvo.hp -= tropa.atk;
+                                if (tropaAlvo.hp <= 0) {
+                                    tropaAlvo.estado = 'morto';
+                                    tropaAlvo.el.remove();
+                                    ganharEnergia(tropa.time);
+                                }
+                            }
+                        }
                     }
                 } else {
-                    tropa.estado = 'andando';
+                    // Move em direção ao alvo
                     const angle = Math.atan2(dy, dx);
-                    tropa.x += Math.cos(angle) * velocidadeAtual;
-                    tropa.y += Math.sin(angle) * velocidadeAtual;
+                    tropa.x += Math.cos(angle) * velocidade;
+                    tropa.y += Math.sin(angle) * velocidade;
                 }
             } else {
-                // Se não tem alvo visível, corre pra cima (direção da ilha inimiga)
-                tropa.estado = 'andando';
+                // Move para a direção do inimigo
                 if (tropa.time === 'aliado') {
-                    tropa.y -= velocidadeAtual * 1.5;
+                    tropa.y -= velocidade * 0.7;
                 } else {
-                    tropa.y += velocidadeAtual * 1.5;
+                    tropa.y += velocidade * 0.7;
                 }
             }
             
+            // Limita dentro da arena
             tropa.x = Math.max(5, Math.min(arenaWidth - 35, tropa.x));
             tropa.y = Math.max(5, Math.min(arenaHeight - 35, tropa.y));
             
@@ -1041,6 +1052,7 @@
         const alvos = [];
         const isAliado = tropa.time === 'aliado';
         
+        // Torres inimigas
         const torresIds = isAliado ? 
             ['torre-rei-inimigo', 'torre-esq-inimigo', 'torre-dir-inimigo'] :
             ['torre-rei-aliado', 'torre-esq-aliado', 'torre-dir-aliado'];
@@ -1061,95 +1073,64 @@
                 hp, 
                 el, 
                 id, 
-                distancia: 999,
-                prioridade: 1
+                prioridade: 0
             });
         }
         
-        const tropasInimigas = isAliado ? window.tropasInimigas : window.tropasAliadas;
-        for (const t of tropasInimigas) {
-            if (t.estado === 'morto') continue;
+        // Tropas inimigas
+        const tropasInimigasList = isAliado ? window.tropasInimigas : window.tropasAliadas;
+        for (const t of tropasInimigasList) {
+            if (t.estado === 'morto' || t.id === tropa.id) continue;
             alvos.push({ 
                 tipo: 'tropa', 
                 x: t.x, 
                 y: t.y, 
                 hp: t.hp, 
                 tropa: t, 
-                distancia: 999,
-                prioridade: 0
+                prioridade: 1
             });
         }
         
+        // Calcula distâncias
         for (const alvo of alvos) {
             const dx = alvo.x - tropa.x;
             const dy = alvo.y - tropa.y;
             alvo.distancia = Math.sqrt(dx*dx + dy*dy);
         }
         
+        // Ordena: primeiro tropas (prioridade 1), depois torres (prioridade 0)
         alvos.sort((a, b) => {
-            if (a.prioridade !== b.prioridade) return a.prioridade - b.prioridade;
+            if (a.prioridade !== b.prioridade) return b.prioridade - a.prioridade;
             return a.distancia - b.distancia;
         });
         
+        // Retorna o alvo mais próximo
         for (const alvo of alvos) {
-            const maxDist = alvo.tipo === 'tropa' ? 300 : 400;
+            const maxDist = alvo.tipo === 'tropa' ? 350 : 450;
             if (alvo.distancia < maxDist) {
                 return alvo.tropa || alvo;
             }
         }
         
-        return alvos.length > 0 ? (alvos[0].tropa || alvos[0]) : null;
-    }
-
-    function atacar(atacante, alvo) {
-        if (!alvo || alvo.estado === 'morto') return;
-        if (!jogoAtivo) return;
-        
-        const dano = atacante.atk + Math.floor(Math.random() * 10 - 5);
-        
-        if (alvo.tipo === 'torre' || alvo.id) {
-            const id = alvo.id || alvo;
-            const el = document.getElementById(id);
-            if (!el) return;
-            const hpAtual = parseInt(el.dataset.hp);
-            const novoHp = Math.max(0, hpAtual - dano);
-            el.dataset.hp = novoHp;
-            const hpPercent = (novoHp / parseInt(el.dataset.maxhp)) * 100;
-            el.querySelector('.hp-fill').style.width = Math.max(0, hpPercent) + '%';
-        } else if (alvo.tropa) {
-            const tropaAlvo = alvo.tropa || alvo;
-            tropaAlvo.hp -= dano;
-            if (tropaAlvo.hp <= 0) {
-                tropaAlvo.estado = 'morto';
-                if (atacante.time === 'aliado') {
-                    ganharEnergia('aliado');
-                } else {
-                    ganharEnergia('inimigo');
-                }
-            }
-        } else {
-            alvo.hp -= dano;
-            if (alvo.hp <= 0) {
-                alvo.estado = 'morto';
-                if (atacante.time === 'aliado') {
-                    ganharEnergia('aliado');
-                } else {
-                    ganharEnergia('inimigo');
-                }
-            }
+        // Se não encontrou ninguém perto, vai para o alvo mais próximo (torre ou tropa)
+        if (alvos.length > 0) {
+            return alvos[0].tropa || alvos[0];
         }
+        
+        return null;
     }
 
     function removerMortos() {
         const mortosAliados = tropasAliadas.filter(t => t.estado === 'morto' || t.hp <= 0);
         const mortosInimigos = tropasInimigas.filter(t => t.estado === 'morto' || t.hp <= 0);
         
-        mortosAliados.forEach(t => t.el.remove());
-        mortosInimigos.forEach(t => t.el.remove());
+        mortosAliados.forEach(t => { if (t.el) t.el.remove(); });
+        mortosInimigos.forEach(t => { if (t.el) t.el.remove(); });
         
         tropasAliadas = tropasAliadas.filter(t => t.estado !== 'morto' && t.hp > 0);
         tropasInimigas = tropasInimigas.filter(t => t.estado !== 'morto' && t.hp > 0);
         
+        // Remove tropas que saíram da arena
         const arena = document.getElementById('arena');
         const arenaHeight = arena.offsetHeight;
         tropasAliadas = tropasAliadas.filter(t => {
@@ -1209,8 +1190,8 @@
         energiaAliado = 10;
         energiaInimigo = 10;
         contadorRecarga = 0;
-        jogoAtivo = true;
         tempoRecarga = 0;
+        jogoAtivo = true;
         
         if (frameId) cancelAnimationFrame(frameId);
         loopJogo();
