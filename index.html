@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clash Royale Web - Corrigido</title>
+    <title>⚔️ Clash Royale - Versão Completa</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            user-select: none;
         }
         body {
             background: linear-gradient(135deg, #1a2536, #2c3e50);
             color: white;
             font-family: 'Segoe UI', Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
             padding: 20px;
         }
@@ -26,8 +24,8 @@
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.8);
             text-align: center;
-            max-width: 550px;
-            width: 100%;
+            max-width: 650px;
+            margin: 0 auto;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.1);
         }
@@ -38,27 +36,21 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        h2 {
-            color: #ecf0f1;
-            font-size: 18px;
-            margin-bottom: 8px;
-        }
         .hidden { display: none !important; }
         
         button {
             background: linear-gradient(45deg, #f39c12, #e67e22);
             color: white;
             border: none;
-            padding: 12px 20px;
-            margin: 6px 0;
-            font-size: 15px;
+            padding: 10px 16px;
+            margin: 4px 0;
+            font-size: 13px;
             font-weight: bold;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
-            width: 100%;
             transition: all 0.3s;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
         button:hover {
             transform: translateY(-2px);
@@ -78,39 +70,57 @@
         button.danger {
             background: linear-gradient(45deg, #e74c3c, #c0392b);
         }
-        button.danger:hover {
-            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+        button.small {
+            padding: 6px 12px;
+            font-size: 11px;
+            width: auto;
         }
-        button.correr {
+        button.green {
             background: linear-gradient(45deg, #2ecc71, #27ae60);
-            animation: pulse-correr 1.5s infinite;
         }
-        button.correr:hover {
+        button.green:hover {
             box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
         }
-        button.correr.ativo {
-            background: linear-gradient(45deg, #e74c3c, #c0392b);
-            animation: none;
+        button.purple {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
         }
-        @keyframes pulse-correr {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.03); }
+        button.purple:hover {
+            box-shadow: 0 8px 25px rgba(155, 89, 182, 0.4);
+        }
+        
+        .dificuldade-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            margin: 8px 0;
+        }
+        button.dificuldade {
+            background: linear-gradient(45deg, #2c3e50, #34495e);
+            border: 2px solid #7f8c8d;
+            padding: 8px;
+            font-size: 13px;
+        }
+        button.dificuldade.ativo {
+            border-color: #f39c12;
+            background: linear-gradient(45deg, #f39c12, #e67e22);
         }
         
         .deck-container {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 6px;
-            margin: 10px 0;
+            gap: 4px;
+            margin: 8px 0;
+            max-height: 280px;
+            overflow-y: auto;
         }
         .carta {
             background: linear-gradient(135deg, #34495e, #2c3e50);
-            padding: 8px 4px;
-            border-radius: 10px;
+            padding: 6px 3px;
+            border-radius: 8px;
             cursor: pointer;
-            border: 3px solid transparent;
+            border: 2px solid transparent;
             font-weight: bold;
-            font-size: 10px;
+            font-size: 9px;
             transition: all 0.3s;
         }
         .carta:hover {
@@ -122,10 +132,11 @@
             background: linear-gradient(135deg, #27ae60, #1e8449);
             box-shadow: 0 0 20px rgba(46, 204, 113, 0.3);
         }
-        .carta .emoji { font-size: 22px; display: block; margin-bottom: 2px; }
-        .carta .nome { font-size: 9px; }
-        .carta .stats { font-size: 8px; color: #bdc3c7; display: block; }
-        .carta .custo { font-size: 10px; color: #f39c12; font-weight: bold; }
+        .carta .emoji { font-size: 20px; display: block; }
+        .carta .nome { font-size: 8px; }
+        .carta .stats { font-size: 7px; color: #bdc3c7; display: block; }
+        .carta .custo { font-size: 9px; color: #f39c12; font-weight: bold; }
+        .carta .nivel { font-size: 7px; color: #f1c40f; }
         
         .arena {
             width: 100%;
@@ -137,6 +148,7 @@
             position: relative;
             border-radius: 12px;
             overflow: hidden;
+            cursor: crosshair;
         }
         .rio {
             width: 100%;
@@ -147,6 +159,7 @@
             border-top: 2px solid #2471a3;
             border-bottom: 2px solid #2471a3;
             z-index: 1;
+            pointer-events: none;
         }
         .ponte {
             width: 44px;
@@ -157,6 +170,7 @@
             border-radius: 4px;
             border: 2px solid #6c2e00;
             z-index: 2;
+            pointer-events: none;
         }
         .ponte-esquerda { left: 35px; }
         .ponte-direita { right: 35px; }
@@ -175,6 +189,7 @@
             border: 2px solid rgba(255,255,255,0.2);
             z-index: 5;
             transition: opacity 0.3s;
+            pointer-events: none;
         }
         .torre.destruida {
             opacity: 0.2;
@@ -205,8 +220,8 @@
         .torre-esq-sup { top: 60px; left: 25px; }
         .torre-dir-sup { top: 60px; right: 25px; }
         
-        .aliado { background: radial-gradient(circle, #3498db, #1a5276); border-color: #85c1e9; }
-        .inimigo { background: radial-gradient(circle, #e74c3c, #922b21); border-color: #f1948a; }
+        .torre.aliado { background: radial-gradient(circle, #3498db, #1a5276); border-color: #85c1e9; }
+        .torre.inimigo { background: radial-gradient(circle, #e74c3c, #922b21); border-color: #f1948a; }
         .torre.aliado .hp-fill { background: #3498db; }
         .torre.inimigo .hp-fill { background: #e74c3c; }
         
@@ -224,6 +239,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             border: 2px solid rgba(255,255,255,0.3);
             transition: transform 0.1s;
+            pointer-events: none;
         }
         .tropa .hp-bar {
             position: absolute;
@@ -262,6 +278,13 @@
             0% { transform: scale(1); }
             100% { transform: scale(1.25); }
         }
+        .tropa.stun {
+            animation: stun 0.3s ease-in-out infinite alternate;
+        }
+        @keyframes stun {
+            0% { transform: rotate(-5deg) scale(0.9); }
+            100% { transform: rotate(5deg) scale(1.1); }
+        }
         
         .info-battle {
             display: flex;
@@ -285,12 +308,12 @@
         }
         .hotbar-item {
             background: rgba(0,0,0,0.4);
-            padding: 6px 2px;
+            padding: 4px 2px;
             border-radius: 8px;
             border: 2px solid #34495e;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 10px;
+            font-size: 9px;
             position: relative;
         }
         .hotbar-item:hover {
@@ -301,10 +324,10 @@
             border-color: #2ecc71;
             background: rgba(46, 204, 113, 0.2);
         }
-        .hotbar-item .emoji { font-size: 18px; display: block; }
-        .hotbar-item .nome { font-size: 8px; display: block; }
+        .hotbar-item .emoji { font-size: 16px; display: block; }
+        .hotbar-item .nome { font-size: 7px; display: block; }
         .hotbar-item .custo {
-            font-size: 10px;
+            font-size: 9px;
             color: #f39c12;
             font-weight: bold;
         }
@@ -312,6 +335,20 @@
             opacity: 0.5;
         }
         .hotbar-item.insuficiente .custo { color: #e74c3c; }
+        .hotbar-item .next-indicator {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #2ecc71;
+            color: white;
+            border-radius: 50%;
+            width: 14px;
+            height: 14px;
+            font-size: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         
         .game-over {
             position: absolute;
@@ -319,13 +356,13 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(0,0,0,0.95);
-            padding: 25px 35px;
+            padding: 20px 30px;
             border-radius: 15px;
             z-index: 100;
             border: 3px solid #f39c12;
-            min-width: 220px;
+            min-width: 200px;
         }
-        .game-over h2 { font-size: 24px; margin-bottom: 8px; }
+        .game-over h2 { font-size: 22px; margin-bottom: 6px; }
         .game-over .vitoria { color: #2ecc71; }
         .game-over .derrota { color: #e74c3c; }
         
@@ -354,15 +391,170 @@
         }
         .energia-display .max-energia { color: #bdc3c7; font-size: 12px; }
         
-        .controles-extra {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            gap: 4px;
-            margin-top: 4px;
+        .cooldown-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.7);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #f39c12;
+            border: 2px solid #f39c12;
+            z-index: 20;
+            pointer-events: none;
         }
-        .controles-extra button {
-            padding: 8px 4px;
+        .cooldown-indicator.hidden { display: none; }
+        
+        .trofeus {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #f1c40f;
+        }
+        
+        .modos-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 4px;
+            margin: 6px 0;
+        }
+        .modos-container button {
+            padding: 6px;
             font-size: 11px;
+        }
+        button.modo-ativo {
+            border: 2px solid #f39c12;
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+        }
+        
+        .stats-pos-batalha {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+        }
+        .stats-pos-batalha .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
+            font-size: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .baus-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin: 8px 0;
+        }
+        .bau-item {
+            background: rgba(0,0,0,0.3);
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid #7f8c8d;
+            transition: all 0.3s;
+        }
+        .bau-item:hover {
+            transform: scale(1.05);
+            border-color: #f39c12;
+        }
+        .bau-item .emoji { font-size: 28px; display: block; }
+        .bau-item .nome { font-size: 10px; }
+        .bau-item .tempo { font-size: 9px; color: #bdc3c7; }
+        .bau-item.abrindo {
+            border-color: #f39c12;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .missao-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            margin: 4px 0;
+        }
+        .missao-item .progresso {
+            background: #2c3e50;
+            border-radius: 10px;
+            height: 6px;
+            width: 100px;
+            overflow: hidden;
+        }
+        .missao-item .progresso .fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f39c12, #e67e22);
+            transition: width 0.3s;
+        }
+        .missao-item .recompensa {
+            color: #f1c40f;
+            font-size: 12px;
+        }
+        .missao-item.concluida {
+            opacity: 0.5;
+        }
+        .missao-item.concluida .recompensa {
+            color: #2ecc71;
+        }
+        
+        .trofeu-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            padding: 6px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            margin: 4px 0;
+        }
+        .trofeu-display .trofeu-icon { font-size: 20px; }
+        .trofeu-display .trofeu-valor { font-size: 18px; font-weight: bold; color: #f1c40f; }
+        .trofeu-display .trofeu-label { font-size: 11px; color: #bdc3c7; }
+        
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin: 8px 0;
+        }
+        .tabs button {
+            padding: 6px 12px;
+            font-size: 11px;
+            flex: 1;
+        }
+        .tabs button.tab-ativo {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 8px 0;
+        }
+        .tab-content.ativo {
+            display: block;
+        }
+        
+        @media (max-width: 500px) {
+            .container { padding: 10px; }
+            .deck-container { grid-template-columns: repeat(5, 1fr); }
+            .carta { font-size: 8px; padding: 4px 2px; }
+            .carta .emoji { font-size: 16px; }
+            .baus-container { grid-template-columns: repeat(4, 1fr); }
+            .modos-container { grid-template-columns: 1fr 1fr 1fr; }
         }
     </style>
 </head>
@@ -371,84 +563,55 @@
 <div class="container">
     <h1>⚔️ Clash Royale</h1>
     
-    <!-- Tela Inicial -->
+    <!-- ===== TELA INICIAL ===== -->
     <div id="tela-inicial">
-        <p style="margin-bottom: 12px; color: #bdc3c7;">Monte seu deck e destrua a torre do Rei inimigo!</p>
-        <button onclick="iniciarJogo()">▶️ Iniciar Batalha</button>
+        <div class="trofeu-display">
+            <span class="trofeu-icon">🏆</span>
+            <span class="trofeu-valor" id="trofeus-display">0</span>
+            <span class="trofeu-label">Troféus</span>
+        </div>
+        
+        <div style="margin: 10px 0;">
+            <h3 style="font-size: 14px; color: #ecf0f1; margin-bottom: 4px;">🎯 Dificuldade</h3>
+            <div class="dificuldade-container">
+                <button class="dificuldade ativo" data-dificuldade="facil" onclick="selecionarDificuldade('facil')">😊 Fácil</button>
+                <button class="dificuldade" data-dificuldade="medio" onclick="selecionarDificuldade('medio')">🤔 Médio</button>
+                <button class="dificuldade" data-dificuldade="dificil" onclick="selecionarDificuldade('dificil')">😈 Difícil</button>
+            </div>
+            <p style="font-size: 11px; color: #bdc3c7;" id="desc-dificuldade">Inimigo mais lento, menos agressivo</p>
+        </div>
+        
+        <div style="margin: 6px 0;">
+            <h3 style="font-size: 14px; color: #ecf0f1; margin-bottom: 4px;">🎮 Modo de Jogo</h3>
+            <div class="modos-container">
+                <button class="modo-ativo" data-modo="normal" onclick="selecionarModo('normal')">⚔️ Normal</button>
+                <button data-modo="treino" onclick="selecionarModo('treino')">🏋️ Treino</button>
+                <button data-modo="sudden" onclick="selecionarModo('sudden')">💀 Morte Súbita</button>
+            </div>
+        </div>
+        
+        <button onclick="iniciarJogo()" style="font-size: 18px; padding: 14px;">▶️ Iniciar Batalha</button>
+        
+        <div style="display: flex; gap: 4px; margin-top: 8px;">
+            <button class="secondary small" onclick="mostrarBaus()">📦 Baús</button>
+            <button class="purple small" onclick="mostrarMissoes()">📋 Missões</button>
+            <button class="secondary small" onclick="mostrarEstatisticas()">📊 Estatísticas</button>
+        </div>
     </div>
 
-    <!-- Tela Deck -->
+    <!-- ===== TELA DECK ===== -->
     <div id="tela-deck" class="hidden">
         <h2>🛡️ Monte seu Deck</h2>
         <p style="color: #bdc3c7; font-size: 13px; margin-bottom: 6px;">Escolha 5 guerreiros para seu deck</p>
-        <div class="deck-container" id="selecao-cartas">
-            <div class="carta" onclick="toggleCarta('Megacavaleiro')">
-                <span class="emoji">⚔️</span>
-                <span class="nome">Megacavaleiro</span>
-                <span class="custo">⚡6</span>
-                <span class="stats">HP:1200 ATK:80</span>
-            </div>
-            <div class="carta" onclick="toggleCarta('Corredor')">
-                <span class="emoji">🐷</span>
-                <span class="nome">Corredor</span>
-                <span class="custo">⚡4</span>
-                <span class="stats">HP:900 ATK:100</span>
-            </div>
-            <div class="carta" onclick="toggleCarta('Gigante Real')">
-                <span class="emoji">👑</span>
-                <span class="nome">Gigante Real</span>
-                <span class="custo">⚡7</span>
-                <span class="stats">HP:1500 ATK:60</span>
-            </div>
-            <div class="carta" onclick="toggleCarta('P.E.K.K.A')">
-                <span class="emoji">🤖</span>
-                <span class="nome">P.E.K.K.A</span>
-                <span class="custo">⚡8</span>
-                <span class="stats">HP:1000 ATK:120</span>
-            </div>
-            <div class="carta" onclick="toggleCarta('Arqueiro')">
-                <span class="emoji">🏹</span>
-                <span class="nome">Arqueiro</span>
-                <span class="custo">⚡3</span>
-                <span class="stats">HP:700 ATK:90</span>
-            </div>
-            <div class="carta" onclick="toggleCarta('Gigante')">
-                <span class="emoji">🦍</span>
-                <span class="nome">Gigante</span>
-                <span class="custo">⚡5</span>
-                <span class="stats">HP:1800 ATK:50</span>
-            </div>
-            <div class="carta" onclick="toggleCarta('Bruxa')">
-                <span class="emoji">🧙</span>
-                <span class="nome">Bruxa</span>
-                <span class="custo">⚡5</span>
-                <span class="stats">HP:800 ATK:70</span>
-            </div>
-            <div class="carta" onclick="toggleCarta('Golem')">
-                <span class="emoji">🗿</span>
-                <span class="nome">Golem</span>
-                <span class="custo">⚡8</span>
-                <span class="stats">HP:2000 ATK:40</span>
-            </div>
-            <div class="carta" onclick="toggleCarta('Lorde')">
-                <span class="emoji">⚡</span>
-                <span class="nome">Lorde</span>
-                <span class="custo">⚡4</span>
-                <span class="stats">HP:1100 ATK:85</span>
-            </div>
-            <div class="carta" onclick="toggleCarta('Dragão')">
-                <span class="emoji">🐉</span>
-                <span class="nome">Dragão</span>
-                <span class="custo">⚡7</span>
-                <span class="stats">HP:1300 ATK:75</span>
-            </div>
+        <div style="max-height: 280px; overflow-y: auto;">
+            <div class="deck-container" id="selecao-cartas"></div>
         </div>
-        <p id="deck-status" style="color: #f39c12; font-size: 13px;">Selecione 5 cartas</p>
+        <p id="deck-status" style="color: #f39c12; font-size: 13px; margin: 6px 0;">Selecione 5 cartas</p>
         <button id="btn-confirmar-deck" onclick="confirmarDeck()" disabled>Confirmar Deck</button>
         <button class="secondary" onclick="voltarInicio()">↩️ Voltar</button>
     </div>
 
-    <!-- Tela Jogo -->
+    <!-- ===== TELA JOGO ===== -->
     <div id="tela-jogo" class="hidden" style="position: relative;">
         <div class="info-battle">
             <span>🏰 Seu Rei: <span id="hp-rei-aliado" class="hp-total">2000</span></span>
@@ -462,7 +625,6 @@
             <div class="ponte ponte-esquerda"></div>
             <div class="ponte ponte-direita"></div>
 
-            <!-- Torres Aliadas -->
             <div class="torre aliado torre-rei torre-rei-inf" id="torre-rei-aliado" data-hp="2000" data-maxhp="2000">
                 👑
                 <div class="hp-bar"><div class="hp-fill" style="width:100%"></div></div>
@@ -476,7 +638,6 @@
                 <div class="hp-bar"><div class="hp-fill" style="width:100%"></div></div>
             </div>
 
-            <!-- Torres Inimigas -->
             <div class="torre inimigo torre-rei torre-rei-sup" id="torre-rei-inimigo" data-hp="2000" data-maxhp="2000">
                 👑
                 <div class="hp-bar"><div class="hp-fill" style="width:100%"></div></div>
@@ -490,16 +651,17 @@
                 <div class="hp-bar"><div class="hp-fill" style="width:100%"></div></div>
             </div>
 
-            <!-- Game Over Overlay -->
             <div id="game-over" class="hidden game-over">
                 <h2 id="resultado-texto"></h2>
-                <p id="resultado-sub" style="margin: 8px 0; color: #bdc3c7;"></p>
-                <button onclick="reiniciarJogo()" style="margin-top: 8px;">🔄 Jogar Novamente</button>
-                <button class="secondary" onclick="voltarInicio()">🏠 Menu</button>
+                <p id="resultado-sub" style="margin: 6px 0; color: #bdc3c7; font-size: 13px;"></p>
+                <div id="stats-pos-batalha" class="stats-pos-batalha"></div>
+                <button onclick="reiniciarJogo()" style="margin-top: 6px; padding: 8px; font-size: 13px;">🔄 Jogar Novamente</button>
+                <button class="secondary" onclick="voltarInicio()" style="padding: 8px; font-size: 13px;">🏠 Menu</button>
             </div>
+            
+            <div id="cooldown-indicator" class="cooldown-indicator hidden">⏳</div>
         </div>
         
-        <!-- Hotbar -->
         <div class="hotbar" id="hotbar">
             <div class="hotbar-item" data-index="0" onclick="selecionarHotbar(0)">
                 <span class="emoji">⚔️</span>
@@ -523,23 +685,119 @@
             </div>
         </div>
         
-        <!-- Timer e controles -->
         <div class="timer-bar">
             <div class="timer-fill" id="timer-fill" style="width:100%"></div>
         </div>
-        
-        <div class="controles-extra">
-            <button class="correr" id="btn-correr" onclick="iniciarAtaqueAutomatico()">🏃 CORRER</button>
-            <button onclick="enviarTropa('esquerda')">⬅️ ESQ</button>
-            <button onclick="enviarTropa('centro')">⬆️ CENTRO</button>
-            <button onclick="enviarTropa('direita')">➡️ DIR</button>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px; flex-wrap: wrap; gap: 4px;">
+            <span class="instrucao-clique" style="background: rgba(0,0,0,0.5); padding: 4px 10px; border-radius: 20px; font-size: 11px; color: #f1c40f;">🖱️ Clique no campo para posicionar</span>
+            <div style="display: flex; gap: 4px;">
+                <button class="small green" onclick="usarFeitico('cura')" style="padding: 4px 10px; font-size: 10px;">💚 Cura</button>
+                <button class="small danger" onclick="usarFeitico('fogo')" style="padding: 4px 10px; font-size: 10px;">🔥 Fogo</button>
+                <button class="small secondary" onclick="usarFeitico('raio')" style="padding: 4px 10px; font-size: 10px;">⚡ Raio</button>
+                <button class="danger" onclick="voltarInicio()" style="width: auto; padding: 4px 12px; font-size: 10px;">⏹️</button>
+            </div>
         </div>
-        <button class="danger" onclick="voltarInicio()" style="margin-top:4px; padding: 6px;">⏹️ SAIR</button>
+    </div>
+
+    <!-- ===== TELA DE BAÚS ===== -->
+    <div id="tela-baus" class="hidden">
+        <h2>📦 Baús</h2>
+        <p style="color: #bdc3c7; font-size: 13px;">Ganhe baús ao vencer batalhas!</p>
+        <div class="baus-container" id="baus-container"></div>
+        <button class="secondary" onclick="voltarInicio()">↩️ Voltar</button>
+    </div>
+
+    <!-- ===== TELA DE MISSÕES ===== -->
+    <div id="tela-missoes" class="hidden">
+        <h2>📋 Missões Diárias</h2>
+        <div id="missoes-container"></div>
+        <button class="secondary" onclick="voltarInicio()">↩️ Voltar</button>
+    </div>
+
+    <!-- ===== TELA DE ESTATÍSTICAS ===== -->
+    <div id="tela-estatisticas" class="hidden">
+        <h2>📊 Estatísticas</h2>
+        <div id="estatisticas-container"></div>
+        <button class="secondary" onclick="voltarInicio()">↩️ Voltar</button>
     </div>
 </div>
 
 <script>
-    // Configurações Globais
+    // ============================================================
+    // 1. CONFIGURAÇÕES E DADOS
+    // ============================================================
+    
+    const CARTAS_BASE = {
+        'Megacavaleiro': { hp: 1200, atk: 40, speed: 1.2, range: 35, custo: 6, emoji: '⚔️', nome: 'Megacavaleiro', tipo: 'tropa' },
+        'Corredor': { hp: 900, atk: 50, speed: 1.8, range: 30, custo: 4, emoji: '🐷', nome: 'Corredor', tipo: 'tropa' },
+        'Gigante Real': { hp: 1500, atk: 35, speed: 0.8, range: 60, custo: 7, emoji: '👑', nome: 'Gigante Real', tipo: 'tropa' },
+        'P.E.K.K.A': { hp: 1000, atk: 65, speed: 1.0, range: 30, custo: 8, emoji: '🤖', nome: 'P.E.K.K.A', tipo: 'tropa' },
+        'Arqueiro': { hp: 700, atk: 30, speed: 1.4, range: 80, custo: 3, emoji: '🏹', nome: 'Arqueiro', tipo: 'tropa' },
+        'Gigante': { hp: 1800, atk: 25, speed: 0.7, range: 30, custo: 5, emoji: '🦍', nome: 'Gigante', tipo: 'tropa' },
+        'Bruxa': { hp: 800, atk: 35, speed: 1.2, range: 70, custo: 5, emoji: '🧙', nome: 'Bruxa', tipo: 'tropa' },
+        'Golem': { hp: 2000, atk: 20, speed: 0.6, range: 28, custo: 8, emoji: '🗿', nome: 'Golem', tipo: 'tropa' },
+        'Lorde': { hp: 1100, atk: 45, speed: 1.3, range: 32, custo: 4, emoji: '⚡', nome: 'Lorde', tipo: 'tropa' },
+        'Dragão': { hp: 1300, atk: 40, speed: 1.1, range: 65, custo: 7, emoji: '🐉', nome: 'Dragão', tipo: 'tropa' },
+        'Príncipe': { hp: 1400, atk: 55, speed: 1.6, range: 30, custo: 5, emoji: '👑', nome: 'Príncipe', tipo: 'tropa' },
+        'Mosqueteira': { hp: 750, atk: 45, speed: 1.2, range: 85, custo: 4, emoji: '🔫', nome: 'Mosqueteira', tipo: 'tropa' },
+        'Mini P.E.K.K.A': { hp: 1100, atk: 70, speed: 1.5, range: 30, custo: 4, emoji: '⚔️', nome: 'Mini P.E.K.K.A', tipo: 'tropa' },
+        'Goblin': { hp: 500, atk: 35, speed: 2.0, range: 25, custo: 2, emoji: '🧌', nome: 'Goblin', tipo: 'tropa' },
+        'Valkíria': { hp: 1300, atk: 50, speed: 1.1, range: 35, custo: 4, emoji: '⚔️', nome: 'Valkíria', tipo: 'tropa' },
+        'Cavaleiro': { hp: 1000, atk: 40, speed: 1.3, range: 30, custo: 3, emoji: '🛡️', nome: 'Cavaleiro', tipo: 'tropa' },
+        'Bárbaros': { hp: 800, atk: 45, speed: 1.5, range: 25, custo: 5, emoji: '⚔️', nome: 'Bárbaros', tipo: 'tropa', quantidade: 3 },
+        'Goblins': { hp: 300, atk: 35, speed: 2.2, range: 20, custo: 2, emoji: '🧌', nome: 'Goblins', tipo: 'tropa', quantidade: 3 }
+    };
+
+    // Feitiços
+    const FEITICOS = {
+        'cura': { custo: 3, nome: 'Cura', emoji: '💚', desc: 'Cura tropas aliadas' },
+        'fogo': { custo: 4, nome: 'Bola de Fogo', emoji: '🔥', desc: 'Dano em área' },
+        'raio': { custo: 6, nome: 'Relâmpago', emoji: '⚡', desc: 'Dano em 3 alvos' }
+    };
+
+    // ============================================================
+    // 2. ESTADO DO JOGO (Salvo no localStorage)
+    // ============================================================
+    
+    let estadoJogo = {
+        trofeus: 0,
+        recorde: 0,
+        vitorias: 0,
+        derrotas: 0,
+        totalPartidas: 0,
+        tropasUsadas: 0,
+        danoCausado: 0,
+        cartasNiveis: {},
+        baus: [],
+        missoes: [],
+        ultimaMissaoReset: Date.now()
+    };
+
+    function carregarEstado() {
+        try {
+            const data = localStorage.getItem('clashRoyaleEstado');
+            if (data) {
+                const parsed = JSON.parse(data);
+                estadoJogo = { ...estadoJogo, ...parsed };
+            }
+        } catch(e) {}
+    }
+
+    function salvarEstado() {
+        try {
+            localStorage.setItem('clashRoyaleEstado', JSON.stringify(estadoJogo));
+        } catch(e) {}
+    }
+
+    carregarEstado();
+
+    // ============================================================
+    // 3. VARIÁVEIS GLOBAIS DO JOGO
+    // ============================================================
+    
+    let dificuldadeAtual = 'facil';
+    let modoAtual = 'normal';
     let deckSelecionado = [];
     let cartaAtual = 0;
     let jogoAtivo = false;
@@ -548,37 +806,23 @@
     let intervalos = [];
     let frameId = null;
     let tempoRecarga = 0;
-    const TEMPO_MAX_RECARGA = 60; // Recarga de spawn manual (1 seg)
-    
-    // Sistema de Energia
+    const TEMPO_MAX_RECARGA = 90;
     let energiaAliado = 10;
     let energiaInimigo = 10;
     const MAX_ENERGIA = 10;
-    const INTERVALO_RECARGA = 40; // ~0.66s para ganhar 1 energia
+    let INTERVALO_RECARGA = 55;
     let contadorRecarga = 0;
-    
-    // Ataque da Torre
     let cooldownTorres = 0;
+    let statsBatalha = { tropasUsadas: 0, danoCausado: 0, torresDestruidas: 0 };
+    let modoTreino = false;
+    let modoSuddenDeath = false;
 
-    // Sistema de Corrida Automática
-    let corridaAutomaticaAtiva = false;
-    let idCorridaAutomatica = null;
-
-    const CARTAS = {
-        'Megacavaleiro': { hp: 1200, atk: 40, speed: 1.2, range: 35, custo: 6, emoji: '⚔️', nome: 'Megacavaleiro' },
-        'Corredor': { hp: 900, atk: 50, speed: 1.8, range: 30, custo: 4, emoji: '🐷', nome: 'Corredor' },
-        'Gigante Real': { hp: 1500, atk: 35, speed: 0.8, range: 60, custo: 7, emoji: '👑', nome: 'Gigante Real' },
-        'P.E.K.K.A': { hp: 1000, atk: 65, speed: 1.0, range: 30, custo: 8, emoji: '🤖', nome: 'P.E.K.K.A' },
-        'Arqueiro': { hp: 700, atk: 30, speed: 1.4, range: 80, custo: 3, emoji: '🏹', nome: 'Arqueiro' },
-        'Gigante': { hp: 1800, atk: 25, speed: 0.7, range: 30, custo: 5, emoji: '🦍', nome: 'Gigante' },
-        'Bruxa': { hp: 800, atk: 35, speed: 1.2, range: 70, custo: 5, emoji: '🧙', nome: 'Bruxa' },
-        'Golem': { hp: 2000, atk: 20, speed: 0.6, range: 28, custo: 8, emoji: '🗿', nome: 'Golem' },
-        'Lorde': { hp: 1100, atk: 45, speed: 1.3, range: 32, custo: 4, emoji: '⚡', nome: 'Lorde' },
-        'Dragão': { hp: 1300, atk: 40, speed: 1.1, range: 65, custo: 7, emoji: '🐉', nome: 'Dragão' }
-    };
-
+    // ============================================================
+    // 4. FUNÇÕES DE UI E NAVEGAÇÃO
+    // ============================================================
+    
     function mostrarTela(id) {
-        ['tela-inicial', 'tela-deck', 'tela-jogo'].forEach(el => {
+        ['tela-inicial', 'tela-deck', 'tela-jogo', 'tela-baus', 'tela-missoes', 'tela-estatisticas'].forEach(el => {
             document.getElementById(el).classList.add('hidden');
         });
         document.getElementById(id).classList.remove('hidden');
@@ -594,15 +838,102 @@
         deckSelecionado = [];
         energiaAliado = 10;
         energiaInimigo = 10;
+        document.getElementById('arena').style.cursor = 'crosshair';
+        document.getElementById('cooldown-indicator').classList.add('hidden');
+        atualizarTrofeus();
+    }
+
+    function selecionarDificuldade(dificuldade) {
+        dificuldadeAtual = dificuldade;
+        document.querySelectorAll('.dificuldade').forEach(btn => btn.classList.remove('ativo'));
+        document.querySelector(`.dificuldade[data-dificuldade="${dificuldade}"]`).classList.add('ativo');
+        const descs = {
+            'facil': 'Inimigo mais lento, menos agressivo',
+            'medio': 'Inimigo equilibrado, velocidade normal',
+            'dificil': 'Inimigo mais rápido e agressivo!'
+        };
+        document.getElementById('desc-dificuldade').textContent = descs[dificuldade];
+    }
+
+    function selecionarModo(modo) {
+        modoAtual = modo;
+        document.querySelectorAll('.modos-container button').forEach(btn => btn.classList.remove('modo-ativo'));
+        document.querySelector(`.modos-container button[data-modo="${modo}"]`).classList.add('modo-ativo');
+    }
+
+    function mostrarBaus() {
+        mostrarTela('tela-baus');
+        renderizarBaus();
+    }
+
+    function mostrarMissoes() {
+        mostrarTela('tela-missoes');
+        gerarMissoes();
+        renderizarMissoes();
+    }
+
+    function mostrarEstatisticas() {
+        mostrarTela('tela-estatisticas');
+        renderizarEstatisticas();
+    }
+
+    function atualizarTrofeus() {
+        document.getElementById('trofeus-display').textContent = estadoJogo.trofeus;
+    }
+
+    // ============================================================
+    // 5. SISTEMA DE DECK E CARTAS
+    // ============================================================
+    
+    function getCartas() {
+        return CARTAS_BASE;
+    }
+
+    function getNivelCarta(nome) {
+        return estadoJogo.cartasNiveis[nome] || 1;
+    }
+
+    function getStatsCarta(nome) {
+        const base = CARTAS_BASE[nome];
+        if (!base) return null;
+        const nivel = getNivelCarta(nome);
+        const mult = 1 + (nivel - 1) * 0.1;
+        return {
+            ...base,
+            hp: Math.floor(base.hp * mult),
+            atk: Math.floor(base.atk * mult)
+        };
     }
 
     function iniciarJogo() {
-        mostrarTela('tela-deck');
-        document.getElementById('game-over').classList.add('hidden');
         deckSelecionado = [];
         document.querySelectorAll('.carta').forEach(c => c.classList.remove('selecionada'));
         document.getElementById('btn-confirmar-deck').disabled = true;
         document.getElementById('deck-status').textContent = 'Selecione 5 cartas';
+        gerarCartas();
+        mostrarTela('tela-deck');
+        document.getElementById('game-over').classList.add('hidden');
+    }
+
+    function gerarCartas() {
+        const container = document.getElementById('selecao-cartas');
+        container.innerHTML = '';
+        Object.keys(CARTAS_BASE).forEach(nome => {
+            const stats = getStatsCarta(nome);
+            if (!stats) return;
+            const nivel = getNivelCarta(nome);
+            const div = document.createElement('div');
+            div.className = 'carta';
+            div.onclick = () => toggleCarta(nome);
+            div.innerHTML = `
+                <span class="emoji">${stats.emoji}</span>
+                <span class="nome">${stats.nome}</span>
+                <span class="custo">⚡${stats.custo}</span>
+                <span class="stats">HP:${stats.hp} ATK:${stats.atk}</span>
+                <span class="nivel">⭐ Nv.${nivel}</span>
+            `;
+            container.appendChild(div);
+        });
     }
 
     function toggleCarta(nome) {
@@ -616,9 +947,8 @@
             return;
         }
         
-        const cartas = document.querySelectorAll('.carta');
-        const nomes = Object.keys(CARTAS);
-        cartas.forEach((el, i) => {
+        document.querySelectorAll('.carta').forEach((el, i) => {
+            const nomes = Object.keys(CARTAS_BASE);
             el.classList.toggle('selecionada', deckSelecionado.includes(nomes[i]));
         });
         
@@ -632,6 +962,367 @@
         }
     }
 
+    // ============================================================
+    // 6. SISTEMA DE FEITIÇOS
+    // ============================================================
+    
+    let feiticoSelecionado = null;
+
+    function usarFeitico(tipo) {
+        if (!jogoAtivo) return;
+        const feitico = FEITICOS[tipo];
+        if (!feitico) return;
+        if (energiaAliado < feitico.custo) {
+            document.getElementById('energia-aliado').style.color = '#e74c3c';
+            setTimeout(() => document.getElementById('energia-aliado').style.color = '#f39c12', 300);
+            return;
+        }
+        if (tempoRecarga > 20) {
+            document.getElementById('cooldown-indicator').classList.remove('hidden');
+            document.getElementById('cooldown-indicator').textContent = '⏳';
+            setTimeout(() => document.getElementById('cooldown-indicator').classList.add('hidden'), 500);
+            return;
+        }
+
+        feiticoSelecionado = tipo;
+        document.getElementById('arena').style.cursor = 'pointer';
+        document.getElementById('arena').addEventListener('click', aplicarFeitico);
+        document.getElementById('cooldown-indicator').classList.remove('hidden');
+        document.getElementById('cooldown-indicator').textContent = '🎯';
+        setTimeout(() => {
+            document.getElementById('cooldown-indicator').classList.add('hidden');
+            document.getElementById('arena').removeEventListener('click', aplicarFeitico);
+            document.getElementById('arena').style.cursor = 'crosshair';
+            feiticoSelecionado = null;
+        }, 3000);
+    }
+
+    function aplicarFeitico(e) {
+        if (!jogoAtivo || !feiticoSelecionado) return;
+        const arena = document.getElementById('arena');
+        const rect = arena.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const feitico = FEITICOS[feiticoSelecionado];
+        
+        energiaAliado -= feitico.custo;
+        atualizarEnergia();
+        tempoRecarga = TEMPO_MAX_RECARGA;
+
+        const todasTropas = [...window.tropasAliadas, ...window.tropasInimigas];
+        
+        if (feiticoSelecionado === 'cura') {
+            // Cura tropas aliadas
+            window.tropasAliadas.forEach(tropa => {
+                const dx = tropa.x - x;
+                const dy = tropa.y - y;
+                if (Math.sqrt(dx*dx + dy*dy) < 80) {
+                    tropa.hp = Math.min(tropa.maxHp, tropa.hp + 150);
+                    tropa.el.querySelector('.hp-fill').style.width = (tropa.hp / tropa.maxHp * 100) + '%';
+                    // Efeito visual
+                    tropa.el.style.borderColor = '#2ecc71';
+                    setTimeout(() => tropa.el.style.borderColor = 'rgba(255,255,255,0.3)', 500);
+                }
+            });
+            // Efeito de cura na arena
+            const curaEl = document.createElement('div');
+            curaEl.style.cssText = `
+                position: absolute; left: ${x-40}px; top: ${y-40}px;
+                width: 80px; height: 80px; border-radius: 50%;
+                background: radial-gradient(circle, rgba(46,204,113,0.3), transparent);
+                pointer-events: none; z-index: 15;
+                animation: fadeOut 0.8s forwards;
+            `;
+            arena.appendChild(curaEl);
+            setTimeout(() => curaEl.remove(), 800);
+            
+        } else if (feiticoSelecionado === 'fogo') {
+            // Bola de Fogo - dano em área
+            todasTropas.forEach(tropa => {
+                const dx = tropa.x - x;
+                const dy = tropa.y - y;
+                if (Math.sqrt(dx*dx + dy*dy) < 70) {
+                    tropa.hp -= 180;
+                    tropa.el.querySelector('.hp-fill').style.width = Math.max(0, (tropa.hp / tropa.maxHp * 100)) + '%';
+                    tropa.el.style.borderColor = '#e74c3c';
+                    setTimeout(() => tropa.el.style.borderColor = 'rgba(255,255,255,0.3)', 500);
+                }
+            });
+            // Efeito de explosão
+            const fogoEl = document.createElement('div');
+            fogoEl.style.cssText = `
+                position: absolute; left: ${x-50}px; top: ${y-50}px;
+                width: 100px; height: 100px; border-radius: 50%;
+                background: radial-gradient(circle, rgba(231,76,60,0.5), rgba(243,156,18,0.2), transparent);
+                pointer-events: none; z-index: 15;
+                animation: explode 0.6s forwards;
+            `;
+            arena.appendChild(fogoEl);
+            setTimeout(() => fogoEl.remove(), 600);
+            
+        } else if (feiticoSelecionado === 'raio') {
+            // Relâmpago - atinge 3 alvos
+            let alvos = [];
+            todasTropas.forEach(tropa => {
+                const dx = tropa.x - x;
+                const dy = tropa.y - y;
+                if (Math.sqrt(dx*dx + dy*dy) < 150) {
+                    alvos.push(tropa);
+                }
+            });
+            alvos.sort((a, b) => (a.hp - b.hp));
+            alvos = alvos.slice(0, 3);
+            alvos.forEach(tropa => {
+                tropa.hp -= 250;
+                tropa.el.querySelector('.hp-fill').style.width = Math.max(0, (tropa.hp / tropa.maxHp * 100)) + '%';
+                tropa.el.style.borderColor = '#f1c40f';
+                setTimeout(() => tropa.el.style.borderColor = 'rgba(255,255,255,0.3)', 500);
+                // Stun effect
+                tropa.el.classList.add('stun');
+                setTimeout(() => tropa.el.classList.remove('stun'), 500);
+            });
+        }
+
+        document.getElementById('arena').removeEventListener('click', aplicarFeitico);
+        document.getElementById('arena').style.cursor = 'crosshair';
+        feiticoSelecionado = null;
+    }
+
+    // ============================================================
+    // 7. SISTEMA DE BAÚS
+    // ============================================================
+    
+    const TIPOS_BAU = [
+        { nome: 'Comum', emoji: '📦', tempo: 30, recompensa: { min: 1, max: 3 } },
+        { nome: 'Raro', emoji: '🎁', tempo: 60, recompensa: { min: 3, max: 6 } },
+        { nome: 'Épico', emoji: '💎', tempo: 120, recompensa: { min: 6, max: 12 } },
+        { nome: 'Lendário', emoji: '👑', tempo: 240, recompensa: { min: 12, max: 25 } }
+    ];
+
+    function ganharBau() {
+        // Chance de ganhar baú após vitória (70%)
+        if (Math.random() > 0.7) return;
+        
+        // Escolhe um tipo de baú baseado nos troféus
+        let indice = 0;
+        const trofeus = estadoJogo.trofeus;
+        if (trofeus > 100) indice = 1;
+        if (trofeus > 300) indice = 2;
+        if (trofeus > 600) indice = 3;
+        // Pequena chance de baú melhor
+        if (Math.random() < 0.1 && indice < 3) indice++;
+        
+        const tipo = TIPOS_BAU[indice];
+        const bau = {
+            id: Date.now(),
+            tipo: tipo,
+            inicio: Date.now(),
+            aberto: false
+        };
+        estadoJogo.baus.push(bau);
+        salvarEstado();
+    }
+
+    function renderizarBaus() {
+        const container = document.getElementById('baus-container');
+        container.innerHTML = '';
+        
+        const bausParaMostrar = estadoJogo.baus.slice(-8).reverse();
+        if (bausParaMostrar.length === 0) {
+            container.innerHTML = '<p style="color: #bdc3c7;">Você ainda não tem baús. Vença batalhas para ganhar!</p>';
+            return;
+        }
+        
+        bausParaMostrar.forEach(bau => {
+            const div = document.createElement('div');
+            div.className = 'bau-item';
+            const tempoRestante = Math.max(0, (bau.inicio + bau.tipo.tempo * 1000 - Date.now()) / 1000);
+            const aberto = bau.aberto || tempoRestante <= 0;
+            
+            div.innerHTML = `
+                <span class="emoji">${bau.tipo.emoji}</span>
+                <span class="nome">${bau.tipo.nome}</span>
+                <span class="tempo">${aberto ? '✅ Pronto!' : Math.ceil(tempoRestante) + 's'}</span>
+            `;
+            
+            if (aberto && !bau.aberto) {
+                div.style.borderColor = '#2ecc71';
+                div.onclick = () => abrirBau(bau.id);
+            }
+            container.appendChild(div);
+        });
+    }
+
+    function abrirBau(id) {
+        const bau = estadoJogo.baus.find(b => b.id === id);
+        if (!bau || bau.aberto) return;
+        
+        bau.aberto = true;
+        const recompensa = Math.floor(
+            bau.tipo.recompensa.min + Math.random() * (bau.tipo.recompensa.max - bau.tipo.recompensa.min + 1)
+        );
+        
+        // Adiciona troféus
+        estadoJogo.trofeus += recompensa;
+        salvarEstado();
+        atualizarTrofeus();
+        
+        alert(`🎉 Baú ${bau.tipo.nome} aberto!\nVocê ganhou ${recompensa} troféus!`);
+        renderizarBaus();
+    }
+
+    // ============================================================
+    // 8. SISTEMA DE MISSÕES
+    // ============================================================
+    
+    const TIPOS_MISSAO = [
+        { id: 'vencer', nome: 'Vença batalhas', emoji: '🏆', alvo: 3, recompensa: 5 },
+        { id: 'usar_tropas', nome: 'Use tropas', emoji: '⚔️', alvo: 15, recompensa: 4 },
+        { id: 'destruir_torres', nome: 'Destrua torres', emoji: '🏰', alvo: 3, recompensa: 6 },
+        { id: 'causar_dano', nome: 'Cause 5000 de dano', emoji: '💥', alvo: 5000, recompensa: 8 }
+    ];
+
+    function gerarMissoes() {
+        // Reseta missões diariamente
+        const hoje = new Date().setHours(0,0,0,0);
+        if (estadoJogo.ultimaMissaoReset < hoje) {
+            estadoJogo.missoes = [];
+            estadoJogo.ultimaMissaoReset = Date.now();
+        }
+        
+        if (estadoJogo.missoes.length === 0) {
+            // Gera 3 missões aleatórias
+            const tipos = [...TIPOS_MISSAO];
+            for (let i = 0; i < 3; i++) {
+                const idx = Math.floor(Math.random() * tipos.length);
+                const tipo = tipos.splice(idx, 1)[0];
+                estadoJogo.missoes.push({
+                    ...tipo,
+                    progresso: 0,
+                    concluida: false
+                });
+            }
+            salvarEstado();
+        }
+    }
+
+    function renderizarMissoes() {
+        const container = document.getElementById('missoes-container');
+        container.innerHTML = '';
+        
+        estadoJogo.missoes.forEach((missao, index) => {
+            const div = document.createElement('div');
+            div.className = `missao-item ${missao.concluida ? 'concluida' : ''}`;
+            const progresso = Math.min(100, (missao.progresso / missao.alvo) * 100);
+            div.innerHTML = `
+                <div style="flex:1;">
+                    <span>${missao.emoji} ${missao.nome}</span>
+                    <div class="progresso">
+                        <div class="fill" style="width:${progresso}%"></div>
+                    </div>
+                    <span style="font-size:10px; color:#bdc3c7;">${missao.progresso}/${missao.alvo}</span>
+                </div>
+                <div>
+                    ${missao.concluida ? '✅' : `🎁 ${missao.recompensa} 🏆`}
+                    ${missao.concluida ? '' : `<button class="small" onclick="reivindicarMissao(${index})" style="padding:2px 8px; font-size:9px; margin-left:4px;">Reivindicar</button>`}
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function reivindicarMissao(index) {
+        const missao = estadoJogo.missoes[index];
+        if (!missao || missao.concluida) return;
+        if (missao.progresso < missao.alvo) {
+            alert('Complete a missão primeiro!');
+            return;
+        }
+        
+        missao.concluida = true;
+        estadoJogo.trofeus += missao.recompensa;
+        salvarEstado();
+        atualizarTrofeus();
+        renderizarMissoes();
+        alert(`🎉 Missão concluída!\nGanhou ${missao.recompensa} troféus!`);
+    }
+
+    function atualizarMissoes(tipo, valor) {
+        estadoJogo.missoes.forEach(missao => {
+            if (missao.concluida) return;
+            if (missao.id === tipo) {
+                missao.progresso = Math.min(missao.alvo, missao.progresso + valor);
+                if (missao.progresso >= missao.alvo) {
+                    // Missão concluída!
+                }
+            }
+        });
+        salvarEstado();
+    }
+
+    // ============================================================
+    // 9. SISTEMA DE ESTATÍSTICAS
+    // ============================================================
+    
+    function renderizarEstatisticas() {
+        const container = document.getElementById('estatisticas-container');
+        const stats = estadoJogo;
+        container.innerHTML = `
+            <div class="stats-pos-batalha">
+                <div class="stat-item"><span>🏆 Troféus</span><span>${stats.trofeus}</span></div>
+                <div class="stat-item"><span>🏆 Recorde</span><span>${stats.recorde}</span></div>
+                <div class="stat-item"><span>✅ Vitórias</span><span>${stats.vitorias}</span></div>
+                <div class="stat-item"><span>❌ Derrotas</span><span>${stats.derrotas}</span></div>
+                <div class="stat-item"><span>📊 Total de Partidas</span><span>${stats.totalPartidas}</span></div>
+                <div class="stat-item"><span>⚔️ Tropas Usadas</span><span>${stats.tropasUsadas}</span></div>
+                <div class="stat-item"><span>💥 Dano Causado</span><span>${stats.danoCausado}</span></div>
+                <div class="stat-item"><span>📦 Baús Abertos</span><span>${stats.baus.filter(b => b.aberto).length}</span></div>
+                <div class="stat-item"><span>⭐ Maior Nível de Carta</span><span>${Math.max(1, ...Object.values(stats.cartasNiveis))}</span></div>
+            </div>
+            <button class="secondary small" onclick="resetarEstatisticas()" style="margin-top:6px;">🔄 Resetar Estatísticas</button>
+        `;
+    }
+
+    function resetarEstatisticas() {
+        if (confirm('Tem certeza? Isso vai resetar todas as estatísticas!')) {
+            estadoJogo = {
+                trofeus: 0,
+                recorde: 0,
+                vitorias: 0,
+                derrotas: 0,
+                totalPartidas: 0,
+                tropasUsadas: 0,
+                danoCausado: 0,
+                cartasNiveis: {},
+                baus: [],
+                missoes: [],
+                ultimaMissaoReset: Date.now()
+            };
+            salvarEstado();
+            renderizarEstatisticas();
+            atualizarTrofeus();
+        }
+    }
+
+    // ============================================================
+    // 10. SISTEMA DE EVOLUÇÃO DE CARTAS
+    // ============================================================
+    
+    function ganharXPCarta(nome) {
+        if (!estadoJogo.cartasNiveis[nome]) {
+            estadoJogo.cartasNiveis[nome] = 1;
+        }
+        // 20% de chance de subir de nível
+        if (Math.random() < 0.2 && estadoJogo.cartasNiveis[nome] < 10) {
+            estadoJogo.cartasNiveis[nome]++;
+            salvarEstado();
+        }
+    }
+
+    // ============================================================
+    // 11. FUNÇÕES PRINCIPAIS DO JOGO
+    // ============================================================
+    
     function selecionarHotbar(index) {
         if (!jogoAtivo || index >= deckSelecionado.length) return;
         cartaAtual = index;
@@ -640,57 +1331,26 @@
         });
     }
 
-    function iniciarAtaqueAutomatico() {
-        if (!jogoAtivo) return;
-        corridaAutomaticaAtiva = !corridaAutomaticaAtiva;
-        const btn = document.getElementById('btn-correr');
-        
-        if (corridaAutomaticaAtiva) {
-            btn.classList.add('ativo');
-            btn.textContent = '⏹️ PARAR';
-            executarAtaqueAutomatico();
-        } else {
-            pararCorridaAutomatica();
-        }
-    }
-
-    function executarAtaqueAutomatico() {
-        if (!corridaAutomaticaAtiva || !jogoAtivo) return;
-
-        if (deckSelecionado.length > 0) {
-            const lados = ['esquerda', 'centro', 'direita'];
-            const ladoSorteado = lados[Math.floor(Math.random() * lados.length)];
-            enviarTropa(ladoSorteado);
-        }
-
-        idCorridaAutomatica = setTimeout(executarAtaqueAutomatico, 1200);
-    }
-
-    function pararCorridaAutomatica() {
-        corridaAutomaticaAtiva = false;
-        if (idCorridaAutomatica) {
-            clearTimeout(idCorridaAutomatica);
-            idCorridaAutomatica = null;
-        }
-        const btn = document.getElementById('btn-correr');
-        if (btn) {
-            btn.classList.remove('ativo');
-            btn.textContent = '🏃 CORRER';
-        }
-    }
-
     function iniciarBatalha() {
+        modoTreino = (modoAtual === 'treino');
+        modoSuddenDeath = (modoAtual === 'sudden');
+        
+        if (dificuldadeAtual === 'facil') INTERVALO_RECARGA = 60;
+        else if (dificuldadeAtual === 'medio') INTERVALO_RECARGA = 55;
+        else INTERVALO_RECARGA = 50;
+        
         mostrarTela('tela-jogo');
         document.getElementById('game-over').classList.add('hidden');
         
         const items = document.querySelectorAll('.hotbar-item');
         deckSelecionado.forEach((nome, i) => {
             if (items[i]) {
-                const stats = CARTAS[nome];
+                const stats = getStatsCarta(nome);
                 items[i].innerHTML = `
                     <span class="emoji">${stats.emoji}</span>
                     <span class="nome">${stats.nome}</span>
                     <span class="custo">⚡${stats.custo}</span>
+                    ${i === 1 ? '<span class="next-indicator">⬇️</span>' : ''}
                 `;
             }
         });
@@ -701,72 +1361,78 @@
         energiaAliado = 10;
         energiaInimigo = 10;
         contadorRecarga = 0;
+        statsBatalha = { tropasUsadas: 0, danoCausado: 0, torresDestruidas: 0 };
         
         resetarTorres();
         document.querySelectorAll('.tropa').forEach(el => el.remove());
         window.tropasAliadas = [];
         window.tropasInimigas = [];
-        pararCorridaAutomatica();
+        document.getElementById('cooldown-indicator').classList.add('hidden');
         
         jogoAtivo = true;
         atualizarEnergia();
         atualizarContadores();
         
+        const arena = document.getElementById('arena');
+        arena.addEventListener('click', cliqueNoCampo);
+        arena.style.cursor = 'crosshair';
+        
         if (frameId) cancelAnimationFrame(frameId);
         loopJogo();
-        
         agendarProximaTropaIA();
     }
 
-    function resetarTorres() {
-        const torres = ['torre-rei-aliado', 'torre-esq-aliado', 'torre-dir-aliado', 
-                       'torre-rei-inimigo', 'torre-esq-inimigo', 'torre-dir-inimigo'];
-        torres.forEach(id => {
-            const el = document.getElementById(id);
-            const maxHp = parseInt(el.dataset.maxhp);
-            el.dataset.hp = maxHp;
-            el.classList.remove('destruida');
-            el.querySelector('.hp-fill').style.width = '100%';
-        });
-        atualizarHpReis();
-    }
-
-    function pararJogo() {
-        jogoAtivo = false;
-        if (frameId) cancelAnimationFrame(frameId);
-        intervalos.forEach(id => clearTimeout(id));
-        intervalos = [];
-        pararCorridaAutomatica();
-    }
-
-    function recarregarEnergia() {
-        contadorRecarga++;
-        if (contadorRecarga >= INTERVALO_RECARGA) {
-            contadorRecarga = 0;
-            if (energiaAliado < MAX_ENERGIA) energiaAliado = Math.min(MAX_ENERGIA, energiaAliado + 1);
-            if (energiaInimigo < MAX_ENERGIA) energiaInimigo = Math.min(MAX_ENERGIA, energiaInimigo + 1);
-            atualizarEnergia();
+    function cliqueNoCampo(e) {
+        if (!jogoAtivo || deckSelecionado.length === 0) return;
+        if (tempoRecarga > 0) {
+            const indicator = document.getElementById('cooldown-indicator');
+            indicator.classList.remove('hidden');
+            indicator.textContent = `⏳${Math.ceil(tempoRecarga / 10)}s`;
+            setTimeout(() => indicator.classList.add('hidden'), 500);
+            return;
         }
-    }
-
-    function atualizarEnergia() {
-        document.getElementById('energia-aliado').textContent = Math.floor(energiaAliado);
-        atualizarCustosHotbar();
-    }
-
-    function atualizarCustosHotbar() {
-        const items = document.querySelectorAll('.hotbar-item');
-        items.forEach((el, i) => {
-            if (i < deckSelecionado.length) {
-                const nome = deckSelecionado[i];
-                const stats = CARTAS[nome];
-                el.classList.toggle('insuficiente', energiaAliado < stats.custo);
-            }
-        });
+        
+        const tipo = deckSelecionado[cartaAtual];
+        const stats = getStatsCarta(tipo);
+        if (!stats) return;
+        if (energiaAliado < stats.custo) {
+            document.getElementById('energia-aliado').style.color = '#e74c3c';
+            setTimeout(() => document.getElementById('energia-aliado').style.color = '#f39c12', 300);
+            return;
+        }
+        
+        const arena = document.getElementById('arena');
+        const rect = arena.getBoundingClientRect();
+        const arenaHeight = arena.offsetHeight;
+        const arenaWidth = arena.offsetWidth;
+        
+        let x = e.clientX - rect.left - 15;
+        let y = e.clientY - rect.top - 15;
+        
+        const limiteY = arenaHeight / 2 + 20;
+        y = Math.max(limiteY, Math.min(arenaHeight - 40, y));
+        x = Math.max(10, Math.min(arenaWidth - 40, x));
+        
+        const quantidade = stats.quantidade || 1;
+        for (let i = 0; i < quantidade; i++) {
+            const offsetX = (i - (quantidade-1)/2) * 20;
+            const offsetY = (i - (quantidade-1)/2) * 15;
+            criarTropa(tipo, 'aliado', x + offsetX, y + offsetY);
+        }
+        
+        energiaAliado -= stats.custo;
+        statsBatalha.tropasUsadas += quantidade;
+        estadoJogo.tropasUsadas += quantidade;
+        atualizarEnergia();
+        tempoRecarga = TEMPO_MAX_RECARGA;
+        atualizarMissoes('usar_tropas', quantidade);
+        
+        cartaAtual = (cartaAtual + 1) % deckSelecionado.length;
+        selecionarHotbar(cartaAtual);
     }
 
     function criarTropa(tipo, time, x, y) {
-        const stats = CARTAS[tipo];
+        const stats = getStatsCarta(tipo);
         if (!stats) return null;
         
         const el = document.createElement('div');
@@ -780,63 +1446,67 @@
         `;
         document.getElementById('arena').appendChild(el);
         
+        const arena = document.getElementById('arena');
+        const arenaWidth = arena.offsetWidth;
+        const ponteEsqX = 35 + 22;
+        const ponteDirX = arenaWidth - 35 - 22;
+        const ponteY = 214 + 16;
+        
         const tropa = {
             id: Math.random().toString(36).substr(2, 9),
-            tipo: tipo,
-            time: time,
-            el: el,
-            x: x,
-            y: y,
+            tipo, time, el, x, y,
             hp: stats.hp,
             maxHp: stats.hp,
             atk: stats.atk,
             speed: stats.speed,
             range: stats.range,
-            alvo: null,
-            cooldownAtaque: 0
+            cooldownAtaque: 0,
+            waypointIndex: 0,
+            waypoints: [],
+            stun: false,
+            stunTimer: 0
         };
         
+        const distEsq = Math.abs(x - ponteEsqX);
+        const distDir = Math.abs(x - ponteDirX);
+        const ponteX = (distEsq < distDir) ? ponteEsqX : ponteDirX;
+        
         if (time === 'aliado') {
-            window.tropasAliadas.push(tropa);
+            tropa.waypoints = [
+                { x: ponteX, y: ponteY - 20 },
+                { x: ponteX, y: ponteY + 20 },
+                { x: ponteX, y: 30 }
+            ];
         } else {
-            window.tropasInimigas.push(tropa);
+            tropa.waypoints = [
+                { x: ponteX, y: ponteY + 20 },
+                { x: ponteX, y: ponteY - 20 },
+                { x: ponteX, y: arena.offsetHeight - 30 }
+            ];
         }
+        
+        if (time === 'aliado') window.tropasAliadas.push(tropa);
+        else window.tropasInimigas.push(tropa);
         
         atualizarContadores();
         return tropa;
     }
 
-    function enviarTropa(lado) {
-        if (!jogoAtivo || deckSelecionado.length === 0) return;
-        if (tempoRecarga > 0) return;
-        
-        const tipo = deckSelecionado[cartaAtual];
-        const stats = CARTAS[tipo];
-        if (energiaAliado < stats.custo) return;
-        
-        energiaAliado -= stats.custo;
-        atualizarEnergia();
-        
-        const arena = document.getElementById('arena');
-        const arenaWidth = arena.offsetWidth;
-        const arenaHeight = arena.offsetHeight;
-        
-        let x = arenaWidth / 2 - 15;
-        if (lado === 'esquerda') x = 40;
-        else if (lado === 'direita') x = arenaWidth - 70;
-        
-        const y = arenaHeight - 90;
-        
-        criarTropa(tipo, 'aliado', x, y);
-        tempoRecarga = TEMPO_MAX_RECARGA;
-        
-        cartaAtual = (cartaAtual + 1) % deckSelecionado.length;
-        selecionarHotbar(cartaAtual);
-    }
-
     function agendarProximaTropaIA() {
         if (!jogoAtivo) return;
-        const delay = 2000 + Math.random() * 2500;
+        if (modoTreino) {
+            // No modo treino, IA é mais lenta
+            setTimeout(() => {
+                if (jogoAtivo) { agendarProximaTropaIA(); }
+            }, 5000);
+            return;
+        }
+        
+        let delay = 3000 + Math.random() * 3500;
+        if (modoSuddenDeath) delay *= 0.5; // Morte súbita: mais rápido
+        if (dificuldadeAtual === 'facil') delay *= 1.5;
+        else if (dificuldadeAtual === 'dificil') delay *= 0.7;
+        
         const id = setTimeout(() => {
             if (jogoAtivo) {
                 enviarTropaIA();
@@ -847,23 +1517,36 @@
     }
 
     function enviarTropaIA() {
-        const cartasPossiveis = Object.keys(CARTAS).filter(nome => CARTAS[nome].custo <= energiaInimigo);
+        if (tempoRecarga > 20) return;
+        
+        const cartasPossiveis = Object.keys(CARTAS_BASE).filter(nome => {
+            const stats = getStatsCarta(nome);
+            const custo = stats ? stats.custo : 999;
+            let limite = 10;
+            if (dificuldadeAtual === 'facil') limite = 5;
+            else if (dificuldadeAtual === 'medio') limite = 7;
+            return custo <= energiaInimigo && custo <= limite;
+        });
         if (cartasPossiveis.length === 0) return;
         
         const tipo = cartasPossiveis[Math.floor(Math.random() * cartasPossiveis.length)];
-        const stats = CARTAS[tipo];
+        const stats = getStatsCarta(tipo);
+        if (!stats) return;
         energiaInimigo -= stats.custo;
         
         const arena = document.getElementById('arena');
         const arenaWidth = arena.offsetWidth;
-        
-        const ladosX = [40, arenaWidth / 2 - 15, arenaWidth - 70];
-        const x = ladosX[Math.floor(Math.random() * ladosX.length)];
-        const y = 60;
-        
-        criarTropa(tipo, 'inimigo', x, y);
+        const x = [40, arenaWidth/2 - 15, arenaWidth - 70][Math.floor(Math.random() * 3)];
+        const quantidade = stats.quantidade || 1;
+        for (let i = 0; i < quantidade; i++) {
+            criarTropa(tipo, 'inimigo', x + (i - (quantidade-1)/2) * 20, 60 + i * 15);
+        }
     }
 
+    // ============================================================
+    // 12. LOOP PRINCIPAL DO JOGO
+    // ============================================================
+    
     function loopJogo() {
         if (!jogoAtivo) return;
         
@@ -877,7 +1560,7 @@
             document.getElementById('timer-fill').style.width = '100%';
         }
         
-        moverEAtacarTropas();
+        moverTropas();
         ataqueDasTorres();
         atualizarContadores();
         atualizarHpReis();
@@ -886,7 +1569,7 @@
         frameId = requestAnimationFrame(loopJogo);
     }
 
-    function moverEAtacarTropas() {
+    function moverTropas() {
         const todasTropas = [...window.tropasAliadas, ...window.tropasInimigas];
         const arena = document.getElementById('arena');
         const arenaWidth = arena.offsetWidth;
@@ -896,6 +1579,14 @@
             if (tropa.hp <= 0) continue;
             
             tropa.cooldownAtaque = Math.max(0, tropa.cooldownAtaque - 1);
+            if (tropa.stunTimer > 0) {
+                tropa.stunTimer--;
+                tropa.el.classList.add('stun');
+                continue;
+            } else {
+                tropa.el.classList.remove('stun');
+            }
+            
             const alvo = encontrarAlvo(tropa);
             
             if (alvo) {
@@ -904,53 +1595,96 @@
                 const dist = Math.sqrt(dx * dx + dy * dy);
                 
                 if (dist <= tropa.range) {
-                    // Atacar Alvo
                     tropa.el.classList.add('atacando');
                     if (tropa.cooldownAtaque <= 0) {
-                        tropa.cooldownAtaque = 35; // Frequência de ataque (~0.6s)
+                        tropa.cooldownAtaque = 35;
+                        let dano = tropa.atk;
+                        // Bônus de dano no modo morte súbita
+                        if (modoSuddenDeath) dano *= 1.5;
                         
                         if (alvo.isTorre) {
                             const elTorre = document.getElementById(alvo.id);
                             if (elTorre) {
-                                let hpAtual = parseInt(elTorre.dataset.hp);
-                                hpAtual = Math.max(0, hpAtual - tropa.atk);
-                                elTorre.dataset.hp = hpAtual;
-                                const maxHp = parseInt(elTorre.dataset.maxhp);
-                                elTorre.querySelector('.hp-fill').style.width = (hpAtual / maxHp * 100) + '%';
-                                if (hpAtual <= 0) elTorre.classList.add('destruida');
+                                let hp = parseInt(elTorre.dataset.hp);
+                                hp = Math.max(0, hp - dano);
+                                elTorre.dataset.hp = hp;
+                                elTorre.querySelector('.hp-fill').style.width = (hp / parseInt(elTorre.dataset.maxhp) * 100) + '%';
+                                if (hp <= 0) {
+                                    elTorre.classList.add('destruida');
+                                    statsBatalha.torresDestruidas++;
+                                    estadoJogo.danoCausado += 100;
+                                    atualizarMissoes('destruir_torres', 1);
+                                    // Ganha XP para cartas
+                                    deckSelecionado.forEach(nome => ganharXPCarta(nome));
+                                }
                             }
+                            estadoJogo.danoCausado += dano;
+                            statsBatalha.danoCausado += dano;
+                            atualizarMissoes('causar_dano', dano);
                         } else {
-                            alvo.hp -= tropa.atk;
-                            const hpPercent = Math.max(0, (alvo.hp / alvo.maxHp) * 100);
-                            alvo.el.querySelector('.hp-fill').style.width = hpPercent + '%';
+                            alvo.hp -= dano;
+                            alvo.el.querySelector('.hp-fill').style.width = Math.max(0, (alvo.hp / alvo.maxHp) * 100) + '%';
+                            estadoJogo.danoCausado += dano;
+                            statsBatalha.danoCausado += dano;
+                            atualizarMissoes('causar_dano', dano);
                         }
                     }
+                    continue;
                 } else {
-                    // Avançar até o Alvo
                     tropa.el.classList.remove('atacando');
-                    const angle = Math.atan2(dy, dx);
-                    tropa.x += Math.cos(angle) * tropa.speed;
-                    tropa.y += Math.sin(angle) * tropa.speed;
+                    moverComWaypoints(tropa, alvo.x, alvo.y);
                 }
             } else {
-                // Sem alvo próximo: Avançar pela arena
                 tropa.el.classList.remove('atacando');
-                if (tropa.time === 'aliado') {
-                    tropa.y -= tropa.speed;
-                } else {
-                    tropa.y += tropa.speed;
-                }
+                const ultimoWaypoint = tropa.waypoints[tropa.waypoints.length - 1];
+                moverComWaypoints(tropa, ultimoWaypoint.x, ultimoWaypoint.y);
             }
             
-            // Manter dentro da arena
             tropa.x = Math.max(10, Math.min(arenaWidth - 40, tropa.x));
             tropa.y = Math.max(10, Math.min(arenaHeight - 40, tropa.y));
-            
             tropa.el.style.left = tropa.x + 'px';
             tropa.el.style.top = tropa.y + 'px';
         }
         
         limparMortos();
+    }
+
+    function moverComWaypoints(tropa, alvoX, alvoY) {
+        if (tropa.waypoints.length === 0 || tropa.waypointIndex >= tropa.waypoints.length) {
+            moverDireto(tropa, alvoX, alvoY);
+            return;
+        }
+        
+        const waypoint = tropa.waypoints[tropa.waypointIndex];
+        const dx = waypoint.x - tropa.x;
+        const dy = waypoint.y - tropa.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        
+        if (dist < 15) {
+            tropa.waypointIndex++;
+            if (tropa.waypointIndex >= tropa.waypoints.length) {
+                moverDireto(tropa, alvoX, alvoY);
+            }
+            return;
+        }
+        
+        const angle = Math.atan2(dy, dx);
+        const speed = tropa.stunTimer > 0 ? tropa.speed * 0.3 : tropa.speed;
+        tropa.x += Math.cos(angle) * speed * 1.2;
+        tropa.y += Math.sin(angle) * speed * 1.2;
+    }
+
+    function moverDireto(tropa, alvoX, alvoY) {
+        const dx = alvoX - tropa.x;
+        const dy = alvoY - tropa.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        
+        if (dist > 2) {
+            const angle = Math.atan2(dy, dx);
+            const speed = tropa.stunTimer > 0 ? tropa.speed * 0.3 : tropa.speed;
+            tropa.x += Math.cos(angle) * speed;
+            tropa.y += Math.sin(angle) * speed;
+        }
     }
 
     function encontrarAlvo(tropa) {
@@ -959,25 +1693,21 @@
         let alvoMaisProximo = null;
         let menorDistancia = Infinity;
         
-        // 1. Procurar Tropas Inimigas Primeiro
         for (const inimigo of inimigos) {
             if (inimigo.hp <= 0) continue;
             const dx = inimigo.x - tropa.x;
             const dy = inimigo.y - tropa.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            
             if (dist < menorDistancia) {
                 menorDistancia = dist;
                 alvoMaisProximo = inimigo;
             }
         }
         
-        // Se houver tropa inimiga dentro da área de visão (180px), foca nela
         if (alvoMaisProximo && menorDistancia < 180) {
             return alvoMaisProximo;
         }
         
-        // 2. Procurar Torres Inimigas
         const torresIds = isAliado ? 
             ['torre-esq-inimigo', 'torre-dir-inimigo', 'torre-rei-inimigo'] :
             ['torre-esq-aliado', 'torre-dir-aliado', 'torre-rei-aliado'];
@@ -988,7 +1718,7 @@
             const el = document.getElementById(id);
             if (!el) continue;
             const hp = parseInt(el.dataset.hp);
-            if (hp <= 0) continue; // Torre destruída
+            if (hp <= 0) continue;
             
             const rect = el.getBoundingClientRect();
             const x = rect.left - arenaRect.left + 15;
@@ -1009,12 +1739,12 @@
 
     function ataqueDasTorres() {
         cooldownTorres++;
-        if (cooldownTorres < 40) return; // Torres atiram a cada ~0.6s
+        if (cooldownTorres < 40) return;
         cooldownTorres = 0;
         
         const arenaRect = document.getElementById('arena').getBoundingClientRect();
         
-        const checarAtaqueTorre = (torresIds, tropasAlvo) => {
+        const atacar = (torresIds, tropasAlvo) => {
             torresIds.forEach(id => {
                 const el = document.getElementById(id);
                 if (!el || parseInt(el.dataset.hp) <= 0) return;
@@ -1027,36 +1757,61 @@
                     if (tropa.hp <= 0) continue;
                     const dx = tropa.x - tx;
                     const dy = tropa.y - ty;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (dist <= 120) { // Alcance da torre
-                        tropa.hp -= 35; // Dano da torre
-                        const hpPercent = Math.max(0, (tropa.hp / tropa.maxHp) * 100);
-                        tropa.el.querySelector('.hp-fill').style.width = hpPercent + '%';
+                    if (Math.sqrt(dx*dx + dy*dy) <= 120) {
+                        let dano = 35;
+                        if (modoSuddenDeath) dano *= 1.3;
+                        tropa.hp -= dano;
+                        tropa.el.querySelector('.hp-fill').style.width = Math.max(0, (tropa.hp / tropa.maxHp) * 100) + '%';
                         break;
                     }
                 }
             });
         };
         
-        checarAtaqueTorre(['torre-esq-aliado', 'torre-dir-aliado', 'torre-rei-aliado'], window.tropasInimigas);
-        checarAtaqueTorre(['torre-esq-inimigo', 'torre-dir-inimigo', 'torre-rei-inimigo'], window.tropasAliadas);
+        atacar(['torre-esq-aliado', 'torre-dir-aliado', 'torre-rei-aliado'], window.tropasInimigas);
+        atacar(['torre-esq-inimigo', 'torre-dir-inimigo', 'torre-rei-inimigo'], window.tropasAliadas);
+    }
+
+    function recarregarEnergia() {
+        if (modoTreino) {
+            // Modo treino: elixir infinito
+            energiaAliado = MAX_ENERGIA;
+            energiaInimigo = MAX_ENERGIA;
+            atualizarEnergia();
+            return;
+        }
+        
+        contadorRecarga++;
+        let intervalo = INTERVALO_RECARGA;
+        if (modoSuddenDeath) intervalo = Math.floor(INTERVALO_RECARGA * 0.7);
+        
+        if (contadorRecarga >= intervalo) {
+            contadorRecarga = 0;
+            if (energiaAliado < MAX_ENERGIA) energiaAliado++;
+            if (energiaInimigo < MAX_ENERGIA) energiaInimigo++;
+            atualizarEnergia();
+        }
+    }
+
+    function atualizarEnergia() {
+        document.getElementById('energia-aliado').textContent = Math.floor(energiaAliado);
+        document.querySelectorAll('.hotbar-item').forEach((el, i) => {
+            if (i < deckSelecionado.length) {
+                const stats = getStatsCarta(deckSelecionado[i]);
+                if (stats) {
+                    el.classList.toggle('insuficiente', energiaAliado < stats.custo);
+                }
+            }
+        });
     }
 
     function limparMortos() {
         window.tropasAliadas = window.tropasAliadas.filter(t => {
-            if (t.hp <= 0) {
-                t.el.remove();
-                return false;
-            }
+            if (t.hp <= 0) { t.el.remove(); return false; }
             return true;
         });
-        
         window.tropasInimigas = window.tropasInimigas.filter(t => {
-            if (t.hp <= 0) {
-                t.el.remove();
-                return false;
-            }
+            if (t.hp <= 0) { t.el.remove(); return false; }
             return true;
         });
     }
@@ -1067,39 +1822,144 @@
     }
 
     function atualizarHpReis() {
-        const hpAliado = document.getElementById('torre-rei-aliado').dataset.hp;
-        const hpInimigo = document.getElementById('torre-rei-inimigo').dataset.hp;
-        document.getElementById('hp-rei-aliado').textContent = Math.max(0, hpAliado);
-        document.getElementById('hp-rei-inimigo').textContent = Math.max(0, hpInimigo);
+        document.getElementById('hp-rei-aliado').textContent = Math.max(0, document.getElementById('torre-rei-aliado').dataset.hp);
+        document.getElementById('hp-rei-inimigo').textContent = Math.max(0, document.getElementById('torre-rei-inimigo').dataset.hp);
+    }
+
+    function resetarTorres() {
+        ['torre-rei-aliado', 'torre-esq-aliado', 'torre-dir-aliado', 
+         'torre-rei-inimigo', 'torre-esq-inimigo', 'torre-dir-inimigo'].forEach(id => {
+            const el = document.getElementById(id);
+            const maxHp = parseInt(el.dataset.maxhp);
+            el.dataset.hp = maxHp;
+            el.classList.remove('destruida');
+            el.querySelector('.hp-fill').style.width = '100%';
+        });
+        atualizarHpReis();
     }
 
     function verificarFimDeJogo() {
-        const hpReiAliado = parseInt(document.getElementById('torre-rei-aliado').dataset.hp);
-        const hpReiInimigo = parseInt(document.getElementById('torre-rei-inimigo').dataset.hp);
+        const hpAliado = parseInt(document.getElementById('torre-rei-aliado').dataset.hp);
+        const hpInimigo = parseInt(document.getElementById('torre-rei-inimigo').dataset.hp);
         
-        if (hpReiAliado <= 0) {
-            fimDeJogo(false, 'Sua Torre do Rei foi destruída! 💀');
-        } else if (hpReiInimigo <= 0) {
-            fimDeJogo(true, 'Você destruiu a Torre do Rei Inimigo! 👑');
+        // Modo morte súbita: só precisa destruir uma torre
+        if (modoSuddenDeath) {
+            const torresAliadas = ['torre-esq-aliado', 'torre-dir-aliado', 'torre-rei-aliado'];
+            const torresInimigas = ['torre-esq-inimigo', 'torre-dir-inimigo', 'torre-rei-inimigo'];
+            let torresAliadasVivas = 0;
+            let torresInimigasVivas = 0;
+            
+            torresAliadas.forEach(id => {
+                if (parseInt(document.getElementById(id).dataset.hp) > 0) torresAliadasVivas++;
+            });
+            torresInimigas.forEach(id => {
+                if (parseInt(document.getElementById(id).dataset.hp) > 0) torresInimigasVivas++;
+            });
+            
+            if (torresAliadasVivas === 0) {
+                fimDeJogo(false, 'Todas as suas torres foram destruídas! 💀');
+                return;
+            }
+            if (torresInimigasVivas === 0) {
+                fimDeJogo(true, 'Você destruiu todas as torres inimigas! 👑');
+                return;
+            }
         }
+        
+        if (hpAliado <= 0) fimDeJogo(false, 'Sua Torre do Rei foi destruída! 💀');
+        else if (hpInimigo <= 0) fimDeJogo(true, 'Você destruiu a Torre do Rei Inimigo! 👑');
     }
 
     function fimDeJogo(vitoria, mensagem) {
         if (!jogoAtivo) return;
         pararJogo();
         
+        if (!modoTreino) {
+            if (vitoria) {
+                estadoJogo.vitorias++;
+                let trofeusGanhos = 10 + Math.floor(Math.random() * 15);
+                if (modoSuddenDeath) trofeusGanhos *= 1.5;
+                estadoJogo.trofeus += Math.floor(trofeusGanhos);
+                if (estadoJogo.trofeus > estadoJogo.recorde) {
+                    estadoJogo.recorde = estadoJogo.trofeus;
+                }
+                atualizarMissoes('vencer', 1);
+                ganharBau();
+                // Evolui cartas usadas
+                deckSelecionado.forEach(nome => ganharXPCarta(nome));
+            } else {
+                estadoJogo.derrotas++;
+                let perda = Math.max(0, 5 + Math.floor(Math.random() * 5));
+                estadoJogo.trofeus = Math.max(0, estadoJogo.trofeus - perda);
+            }
+            estadoJogo.totalPartidas++;
+            estadoJogo.tropasUsadas += statsBatalha.tropasUsadas;
+            estadoJogo.danoCausado += statsBatalha.danoCausado;
+            salvarEstado();
+            atualizarTrofeus();
+        }
+        
         const overlay = document.getElementById('game-over');
         overlay.classList.remove('hidden');
         document.getElementById('resultado-texto').textContent = vitoria ? '🎉 VITÓRIA!' : '💀 DERROTA!';
         document.getElementById('resultado-texto').className = vitoria ? 'vitoria' : 'derrota';
-        document.getElementById('resultado-sub').textContent = mensagem;
+        document.getElementById('resultado-sub').textContent = mensagem + (modoTreino ? ' (Modo Treino)' : '');
+        
+        // Estatísticas pós-batalha
+        const statsDiv = document.getElementById('stats-pos-batalha');
+        statsDiv.innerHTML = `
+            <div class="stat-item"><span>⚔️ Tropas usadas</span><span>${statsBatalha.tropasUsadas}</span></div>
+            <div class="stat-item"><span>💥 Dano causado</span><span>${statsBatalha.danoCausado}</span></div>
+            <div class="stat-item"><span>🏰 Torres destruídas</span><span>${statsBatalha.torresDestruidas}</span></div>
+            ${!modoTreino ? `<div class="stat-item"><span>🏆 Troféus ${vitoria ? 'ganhos' : 'perdidos'}</span><span>${vitoria ? '+' : '-'}${vitoria ? Math.floor(10 + Math.random() * 15) : Math.floor(5 + Math.random() * 5)}</span></div>` : ''}
+        `;
+        
+        document.getElementById('arena').style.cursor = 'default';
+    }
+
+    function pararJogo() {
+        jogoAtivo = false;
+        if (frameId) cancelAnimationFrame(frameId);
+        intervalos.forEach(id => clearTimeout(id));
+        intervalos = [];
+        document.getElementById('arena').removeEventListener('click', cliqueNoCampo);
+        document.getElementById('arena').style.cursor = 'default';
+        document.getElementById('cooldown-indicator').classList.add('hidden');
     }
 
     function reiniciarJogo() {
         iniciarBatalha();
     }
 
+    // ============================================================
+    // 13. INICIALIZAÇÃO
+    // ============================================================
+    
+    // Adiciona estilos CSS para animações
+    const styleSheet = document.createElement("style");
+    styleSheet.textContent = `
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: scale(0.5); }
+            100% { opacity: 0; transform: scale(1.5); }
+        }
+        @keyframes explode {
+            0% { opacity: 1; transform: scale(0.3); }
+            100% { opacity: 0; transform: scale(2); }
+        }
+        @keyframes stun {
+            0% { transform: rotate(-5deg) scale(0.9); }
+            100% { transform: rotate(5deg) scale(1.1); }
+        }
+    `;
+    document.head.appendChild(styleSheet);
+
+    gerarCartas();
     mostrarTela('tela-inicial');
+    atualizarTrofeus();
+    gerarMissoes();
+
+    console.log('⚔️ Clash Royale - Versão Completa carregada!');
+    console.log('📊 Estatísticas:', estadoJogo);
 </script>
 </body>
 </html>
