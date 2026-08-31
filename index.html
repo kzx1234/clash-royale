@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>⚔️ Clash Royale - Multiplayer</title>
     
-    <!-- PeerJS para multiplayer -->
-    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+    <!-- PeerJS para multiplayer - Versão estável -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.4.7/peerjs.min.js"></script>
     
     <style>
-        /* ===== TODOS OS SEUS ESTILOS ===== */
         * {
             margin: 0;
             padding: 0;
@@ -93,7 +92,6 @@
             width: auto;
         }
         
-        /* ===== LOBBY ===== */
         #tela-lobby {
             padding: 20px;
         }
@@ -136,7 +134,6 @@
         .status-erro { color: #e74c3c; }
         .status-aguardando { color: #f39c12; }
         
-        /* ===== ARENA ===== */
         .arena {
             width: 100%;
             max-width: 420px;
@@ -431,6 +428,20 @@
             color: #9b59b6;
         }
         
+        .stats-pos-batalha {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+        }
+        .stats-pos-batalha .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
+            font-size: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
         @media (max-width: 500px) {
             .container { padding: 10px; }
             .deck-container { grid-template-columns: repeat(5, 1fr); }
@@ -472,7 +483,7 @@
         <div class="lobby-buttons">
             <button onclick="criarSala()" class="green">👑 Criar Sala</button>
             <div style="display: flex; gap: 8px; align-items: center;">
-                <input type="text" id="codigo-sala" placeholder="Código da sala" maxlength="6" style="text-transform: uppercase;">
+                <input type="text" id="codigo-sala" placeholder="Código" maxlength="6" style="text-transform: uppercase;">
                 <button onclick="entrarSala()" class="secondary">🚪 Entrar</button>
             </div>
         </div>
@@ -543,6 +554,7 @@
             <div id="game-over" class="hidden game-over">
                 <h2 id="resultado-texto"></h2>
                 <p id="resultado-sub" style="margin: 6px 0; color: #bdc3c7; font-size: 13px;"></p>
+                <div id="stats-pos-batalha" class="stats-pos-batalha"></div>
                 <button onclick="reiniciarJogo()" style="margin-top: 6px; padding: 8px; font-size: 13px;">🔄 Jogar Novamente</button>
                 <button class="secondary" onclick="voltarInicio()" style="padding: 8px; font-size: 13px;">🏠 Menu</button>
             </div>
@@ -669,7 +681,7 @@ function salvarEstado() {
 carregarEstado();
 
 // ============================================================
-// 3. MULTIPLAYER - PEERJS
+// 3. MULTIPLAYER - PEERJS (CORRIGIDO)
 // ============================================================
 
 let peer = null;
@@ -678,6 +690,8 @@ let meuId = '';
 let souHost = false;
 let modoMultiplayer = false;
 let oponenteConectado = false;
+let tentativasReconexao = 0;
+const MAX_TENTATIVAS = 3;
 
 function mostrarLobby() {
     mostrarTela('tela-lobby');
@@ -687,6 +701,7 @@ function mostrarLobby() {
     desconectarMultiplayer();
 }
 
+// ===== FUNÇÃO CORRIGIDA PARA CRIAR SALA =====
 function criarSala() {
     const salaId = gerarCodigoSala();
     document.getElementById('codigo-sala').value = salaId;
@@ -694,54 +709,72 @@ function criarSala() {
     document.getElementById('status-conexao').textContent = '🔄 Criando sala...';
     document.getElementById('status-conexao').className = 'status-aguardando';
     
-    peer = new Peer(salaId, {
-        debug: 2,
-        config: {
-            'iceServers': [
-                { urls: 'stun:stun.l.google.com:19302' },
-                { urls: 'stun:stun1.l.google.com:19302' }
-            ]
-        }
-    });
-    
-    peer.on('open', (id) => {
-        meuId = id;
-        souHost = true;
-        document.getElementById('status-conexao').textContent = `🟢 Sala criada! Código: ${id}`;
-        document.getElementById('status-conexao').className = 'status-conectado';
-        console.log('✅ Sala criada:', id);
+    try {
+        // Usa configuração mais estável
+        peer = new Peer(salaId, {
+            debug: 0,
+            config: {
+                'iceServers': [
+                    { urls: 'stun:stun.l.google.com:19302' },
+                    { urls: 'stun:stun1.l.google.com:19302' },
+                    { urls: 'stun:stun2.l.google.com:19302' }
+                ]
+            }
+        });
         
-        peer.on('connection', (conn) => {
-            conexao = conn;
-            oponenteConectado = true;
-            console.log('👤 Oponente conectou!');
-            document.getElementById('status-conexao').textContent = '👤 Oponente conectado! Iniciando...';
+        peer.on('open', (id) => {
+            meuId = id;
+            souHost = true;
+            document.getElementById('status-conexao').textContent = `🟢 Sala criada! Código: ${id}`;
             document.getElementById('status-conexao').className = 'status-conectado';
+            console.log('✅ Sala criada:', id);
             
-            conn.on('open', () => {
-                document.getElementById('status-conexao').textContent = '⚔️ Jogo pronto! Iniciando batalha!';
-                setTimeout(() => iniciarBatalhaMultiplayer(), 1000);
-            });
-            
-            conn.on('data', (data) => {
-                receberDadosOponente(data);
-            });
-            
-            conn.on('close', () => {
-                oponenteConectado = false;
-                document.getElementById('status-conexao').textContent = '❌ Oponente desconectou!';
-                document.getElementById('status-conexao').className = 'status-erro';
+            peer.on('connection', (conn) => {
+                conexao = conn;
+                oponenteConectado = true;
+                console.log('👤 Oponente conectou!');
+                document.getElementById('status-conexao').textContent = '👤 Oponente conectado! Iniciando...';
+                document.getElementById('status-conexao').className = 'status-conectado';
+                
+                conn.on('open', () => {
+                    document.getElementById('status-conexao').textContent = '⚔️ Jogo pronto! Iniciando batalha!';
+                    setTimeout(() => iniciarBatalhaMultiplayer(), 1000);
+                });
+                
+                conn.on('data', (data) => {
+                    receberDadosOponente(data);
+                });
+                
+                conn.on('close', () => {
+                    oponenteConectado = false;
+                    document.getElementById('status-conexao').textContent = '❌ Oponente desconectou!';
+                    document.getElementById('status-conexao').className = 'status-erro';
+                });
             });
         });
-    });
-    
-    peer.on('error', (err) => {
-        console.error('❌ Erro PeerJS:', err);
-        document.getElementById('status-conexao').textContent = '❌ Erro: ' + err.message;
+        
+        peer.on('error', (err) => {
+            console.error('❌ Erro PeerJS:', err);
+            let mensagem = 'Erro: ';
+            if (err.type === 'unavailable-id') {
+                mensagem += 'ID já em uso. Tente novamente.';
+            } else if (err.type === 'network') {
+                mensagem += 'Problema de rede. Verifique sua conexão.';
+            } else {
+                mensagem += err.message || 'Erro desconhecido.';
+            }
+            document.getElementById('status-conexao').textContent = mensagem;
+            document.getElementById('status-conexao').className = 'status-erro';
+        });
+        
+    } catch (error) {
+        console.error('❌ Erro ao criar Peer:', error);
+        document.getElementById('status-conexao').textContent = '❌ Erro ao criar sala. Tente novamente.';
         document.getElementById('status-conexao').className = 'status-erro';
-    });
+    }
 }
 
+// ===== FUNÇÃO CORRIGIDA PARA ENTRAR NA SALA =====
 function entrarSala() {
     const salaId = document.getElementById('codigo-sala').value.trim().toUpperCase();
     if (!salaId) {
@@ -752,47 +785,64 @@ function entrarSala() {
     document.getElementById('status-conexao').textContent = '🔄 Conectando...';
     document.getElementById('status-conexao').className = 'status-aguardando';
     
-    peer = new Peer({
-        debug: 2,
-        config: {
-            'iceServers': [
-                { urls: 'stun:stun.l.google.com:19302' },
-                { urls: 'stun:stun1.l.google.com:19302' }
-            ]
-        }
-    });
-    
-    peer.on('open', (id) => {
-        meuId = id;
-        souHost = false;
-        console.log('✅ Peer iniciado:', id);
-        
-        conexao = peer.connect(salaId);
-        
-        conexao.on('open', () => {
-            oponenteConectado = true;
-            console.log('✅ Conectado ao host!');
-            document.getElementById('status-conexao').textContent = '⚔️ Conectado! Iniciando...';
-            document.getElementById('status-conexao').className = 'status-conectado';
-            setTimeout(() => iniciarBatalhaMultiplayer(), 1000);
+    try {
+        peer = new Peer({
+            debug: 0,
+            config: {
+                'iceServers': [
+                    { urls: 'stun:stun.l.google.com:19302' },
+                    { urls: 'stun:stun1.l.google.com:19302' },
+                    { urls: 'stun:stun2.l.google.com:19302' }
+                ]
+            }
         });
         
-        conexao.on('data', (data) => {
-            receberDadosOponente(data);
+        peer.on('open', (id) => {
+            meuId = id;
+            souHost = false;
+            console.log('✅ Peer iniciado:', id);
+            
+            conexao = peer.connect(salaId);
+            
+            conexao.on('open', () => {
+                oponenteConectado = true;
+                console.log('✅ Conectado ao host!');
+                document.getElementById('status-conexao').textContent = '⚔️ Conectado! Iniciando...';
+                document.getElementById('status-conexao').className = 'status-conectado';
+                setTimeout(() => iniciarBatalhaMultiplayer(), 1000);
+            });
+            
+            conexao.on('data', (data) => {
+                receberDadosOponente(data);
+            });
+            
+            conexao.on('close', () => {
+                oponenteConectado = false;
+                document.getElementById('status-conexao').textContent = '❌ Conexão perdida!';
+                document.getElementById('status-conexao').className = 'status-erro';
+                tentarReconectar();
+            });
         });
         
-        conexao.on('close', () => {
-            oponenteConectado = false;
-            document.getElementById('status-conexao').textContent = '❌ Conexão perdida!';
+        peer.on('error', (err) => {
+            console.error('❌ Erro PeerJS:', err);
+            let mensagem = 'Erro: ';
+            if (err.type === 'peer-unavailable') {
+                mensagem += 'Sala não encontrada. Verifique o código.';
+            } else if (err.type === 'network') {
+                mensagem += 'Problema de rede. Verifique sua conexão.';
+            } else {
+                mensagem += err.message || 'Erro desconhecido.';
+            }
+            document.getElementById('status-conexao').textContent = mensagem;
             document.getElementById('status-conexao').className = 'status-erro';
         });
-    });
-    
-    peer.on('error', (err) => {
-        console.error('❌ Erro PeerJS:', err);
-        document.getElementById('status-conexao').textContent = '❌ Erro: ' + err.message;
+        
+    } catch (error) {
+        console.error('❌ Erro ao entrar:', error);
+        document.getElementById('status-conexao').textContent = '❌ Erro ao entrar na sala. Tente novamente.';
         document.getElementById('status-conexao').className = 'status-erro';
-    });
+    }
 }
 
 function gerarCodigoSala() {
@@ -802,6 +852,30 @@ function gerarCodigoSala() {
         codigo += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
     }
     return codigo;
+}
+
+function tentarReconectar() {
+    if (tentativasReconexao < MAX_TENTATIVAS) {
+        tentativasReconexao++;
+        document.getElementById('status-conexao').textContent = `🔄 Tentando reconectar (${tentativasReconexao}/${MAX_TENTATIVAS})...`;
+        document.getElementById('status-conexao').className = 'status-aguardando';
+        
+        setTimeout(() => {
+            if (souHost) {
+                document.getElementById('status-conexao').textContent = '🟢 Aguardando oponente...';
+                document.getElementById('status-conexao').className = 'status-aguardando';
+            } else {
+                const salaId = document.getElementById('codigo-sala').value;
+                if (salaId) {
+                    entrarSala();
+                }
+            }
+        }, 3000);
+    } else {
+        document.getElementById('status-conexao').textContent = '❌ Não foi possível reconectar. Crie uma nova sala.';
+        document.getElementById('status-conexao').className = 'status-erro';
+        tentativasReconexao = 0;
+    }
 }
 
 function desconectarMultiplayer() {
@@ -816,6 +890,7 @@ function desconectarMultiplayer() {
     modoMultiplayer = false;
     souHost = false;
     oponenteConectado = false;
+    tentativasReconexao = 0;
     document.getElementById('modo-indicador').style.display = 'none';
 }
 
@@ -827,7 +902,6 @@ function iniciarBatalhaMultiplayer() {
     modoMultiplayer = true;
     document.getElementById('modo-indicador').style.display = 'inline-block';
     
-    // Mostra tela de deck para escolher as cartas
     mostrarTela('tela-deck');
     document.getElementById('deck-status').textContent = 'Selecione 5 cartas para a batalha multiplayer';
     document.getElementById('btn-confirmar-deck').onclick = function() {
@@ -840,41 +914,42 @@ function iniciarBatalhaMultiplayer() {
 function confirmarDeckMultiplayer() {
     if (deckSelecionado.length !== 5) return;
     
-    // Envia o deck para o oponente
-    if (conexao) {
+    if (conexao && oponenteConectado) {
         conexao.send({
             tipo: 'deck',
             deck: deckSelecionado
         });
     }
     
-    // Inicia a batalha
     iniciarBatalha();
 }
 
 function enviarAcaoMultiplayer(tipo, dados) {
-    if (!conexao || !oponenteConectado) return;
-    conexao.send({
-        tipo: tipo,
-        dados: dados
-    });
+    if (!conexao || !oponenteConectado) {
+        console.warn('⚠️ Conexão multiplayer não disponível');
+        return;
+    }
+    try {
+        conexao.send({
+            tipo: tipo,
+            dados: dados
+        });
+    } catch(e) {
+        console.error('❌ Erro ao enviar dados:', e);
+    }
 }
 
 function receberDadosOponente(data) {
     console.log('📨 Dados recebidos:', data);
     
     if (data.tipo === 'deck') {
-        // Recebeu o deck do oponente
         console.log('📋 Deck do oponente:', data.deck);
-        // Aqui você pode salvar o deck do oponente para referência
         return;
     }
     
     if (data.tipo === 'colocar_tropa') {
         const { carta, x, y, lado } = data.dados;
-        // Inverte o lado (o que é aliado para um é inimigo para outro)
         const time = lado === 'aliado' ? 'inimigo' : 'aliado';
-        // Inverte a posição Y (espelhado)
         const arena = document.getElementById('arena');
         const arenaHeight = arena.offsetHeight;
         const yInvertido = arenaHeight - y;
@@ -883,7 +958,6 @@ function receberDadosOponente(data) {
     }
     
     if (data.tipo === 'sincronizar') {
-        // Atualiza o estado do jogo
         const estado = data.dados;
         atualizarEstadoJogo(estado);
         return;
@@ -891,7 +965,6 @@ function receberDadosOponente(data) {
 }
 
 function atualizarEstadoJogo(estado) {
-    // Atualiza torres
     if (estado.torres) {
         for (const [id, hp] of Object.entries(estado.torres)) {
             const el = document.getElementById(id);
@@ -903,39 +976,6 @@ function atualizarEstadoJogo(estado) {
             }
         }
         atualizarHpReis();
-    }
-    
-    // Atualiza tropas (limpa e recria)
-    if (estado.tropas) {
-        document.querySelectorAll('.tropa').forEach(el => el.remove());
-        window.tropasAliadas = [];
-        window.tropasInimigas = [];
-        
-        estado.tropas.forEach(t => {
-            const time = t.time;
-            const el = document.createElement('div');
-            el.className = `tropa ${time}`;
-            el.style.left = t.x + 'px';
-            el.style.top = t.y + 'px';
-            el.innerHTML = `
-                ${t.emoji || '⚔️'}
-                <span class="nome-tropa">${t.nome || ''}</span>
-                <div class="hp-bar"><div class="hp-fill" style="width:${(t.hp/t.maxHp)*100}%"></div></div>
-            `;
-            document.getElementById('arena').appendChild(el);
-            
-            const tropaObj = {
-                ...t,
-                el: el,
-                cooldownAtaque: 0,
-                waypointIndex: 0,
-                waypoints: []
-            };
-            
-            if (time === 'aliado') window.tropasAliadas.push(tropaObj);
-            else window.tropasInimigas.push(tropaObj);
-        });
-        atualizarContadores();
     }
 }
 
@@ -968,11 +1008,12 @@ function voltarInicio() {
 }
 
 function atualizarTrofeus() {
-    document.getElementById('trofeus-display').textContent = estadoJogo.trofeus;
+    const el = document.getElementById('trofeus-display');
+    if (el) el.textContent = estadoJogo.trofeus;
 }
 
 // ============================================================
-// 6. FUNÇÕES DO JOGO (Simplificadas para o exemplo)
+// 6. FUNÇÕES DO JOGO
 // ============================================================
 
 let deckSelecionado = [];
@@ -1140,7 +1181,6 @@ function cliqueNoCampo(e) {
     atualizarEnergia();
     tempoRecarga = TEMPO_MAX_RECARGA;
     
-    // Se for multiplayer, envia a ação para o oponente
     if (modoMultiplayer && conexao && oponenteConectado) {
         enviarAcaoMultiplayer('colocar_tropa', {
             carta: tipo,
@@ -1214,7 +1254,7 @@ function criarTropa(tipo, time, x, y) {
 }
 
 // ============================================================
-// 7. LOOP DO JOGO (Simplificado)
+// 7. LOOP DO JOGO
 // ============================================================
 
 function loopJogo() {
@@ -1502,6 +1542,12 @@ function fimDeJogo(vitoria, mensagem) {
     document.getElementById('resultado-texto').className = vitoria ? 'vitoria' : 'derrota';
     document.getElementById('resultado-sub').textContent = mensagem + (modoMultiplayer ? ' (Multiplayer)' : '');
     
+    const statsDiv = document.getElementById('stats-pos-batalha');
+    statsDiv.innerHTML = `
+        <div class="stat-item"><span>⚔️ Tropas usadas</span><span>${window.tropasAliadas.length + window.tropasInimigas.length}</span></div>
+        <div class="stat-item"><span>🏰 Torres destruídas</span><span>${document.querySelectorAll('.torre.destruida').length}</span></div>
+    `;
+    
     document.getElementById('arena').style.cursor = 'default';
 }
 
@@ -1517,7 +1563,6 @@ function pararJogo() {
 
 function reiniciarJogo() {
     if (modoMultiplayer) {
-        // No multiplayer, volta para o lobby
         desconectarMultiplayer();
         mostrarLobby();
     } else {
@@ -1564,7 +1609,7 @@ function enviarTropaIA() {
 }
 
 // ============================================================
-// 9. BAÚS, MISSÕES E ESTATÍSTICAS (Simplificados)
+// 9. BAÚS, MISSÕES E ESTATÍSTICAS
 // ============================================================
 
 function mostrarBaus() {
@@ -1615,6 +1660,7 @@ console.log('📊 Estatísticas:', estadoJogo);
 console.log('🎮 Para jogar multiplayer:');
 console.log('1. Jogador 1 clica em "Multiplayer" > "Criar Sala"');
 console.log('2. Jogador 2 clica em "Multiplayer" > digita o código > "Entrar"');
+console.log('⚠️ Certifique-se de que ambos estão usando HTTPS (GitHub Pages)');
 </script>
 </body>
 </html>
